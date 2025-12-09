@@ -13,23 +13,25 @@ body{
   font-family:Georgia,serif;
   padding:1.2rem;
 }
+
 h1{
   text-align:center;
   letter-spacing:0.18em;
-  margin-bottom:0.3rem;
+  margin-bottom:0.2rem;
 }
 .sub{
   text-align:center;
-  opacity:0.7;
+  opacity:0.75;
   font-size:0.85rem;
-  margin-bottom:1.5rem;
+  margin-bottom:1.3rem;
 }
+
 .section{
   margin-bottom:1.4rem;
   padding:1rem;
   border:1px solid #3a2a4a;
-  border-radius:0.8rem;
-  background:rgba(15,8,25,0.7);
+  border-radius:0.9rem;
+  background:rgba(15,8,25,0.75);
 }
 .section h2{
   text-align:center;
@@ -37,24 +39,37 @@ h1{
   letter-spacing:0.12em;
   margin-bottom:0.8rem;
 }
+
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:0.6rem;
 }
+
 button.rune{
   background:#12091c;
   border:1px solid #44335a;
-  border-radius:0.6rem;
+  border-radius:0.7rem;
   color:#eee;
-  padding:0.6rem 0.2rem;
-  font-size:0.75rem;
+  padding:0.5rem 0.2rem;
+  font-size:0.7rem;
+  text-align:center;
+}
+button.rune svg{
+  width:28px;
+  height:28px;
+  display:block;
+  margin:0 auto 0.2rem;
+  stroke:#d8ccff;
+  stroke-width:2.5;
+  fill:none;
 }
 button.rune.active{
   border-color:#fff;
-  box-shadow:0 0 12px rgba(200,180,255,0.6);
+  box-shadow:0 0 14px rgba(200,180,255,0.7);
   background:#1f1230;
 }
+
 #cast{
   width:100%;
   margin-top:1rem;
@@ -63,25 +78,26 @@ button.rune.active{
   background:#2b1c44;
   border:1px solid #6c55a3;
   color:#fff;
-  border-radius:0.7rem;
+  border-radius:0.9rem;
 }
+
 #result{
-  margin-top:1.5rem;
+  margin-top:1.4rem;
   padding:1.2rem;
   background:#0b0713;
   border:2px solid #5a3d88;
-  border-radius:1rem;
-  box-shadow:0 0 25px rgba(120,80,200,.5);
-  min-height:4rem;
+  border-radius:1.1rem;
+  box-shadow:0 0 25px rgba(120,80,200,.55);
   line-height:1.6;
 }
+
 hr{
   border:none;
   border-top:1px solid #34234f;
-  margin:0.7rem 0;
+  margin:0.8rem 0;
 }
 .small{
-  opacity:0.7;
+  opacity:0.75;
   font-size:0.75rem;
 }
 </style>
@@ -90,7 +106,7 @@ hr{
 <body>
 
 <h1>RUNENRITUAL</h1>
-<div class="sub">Canting-Magie • Drei Zeichen entscheiden</div>
+<div class="sub">Canting-Magie • Zeichen fordern ihren Preis</div>
 
 <div class="section">
 <h2>ANKER</h2>
@@ -109,76 +125,163 @@ hr{
 
 <button id="cast">🔮 Ritual wirken</button>
 
-<div id="result"><span class="small">Wähle je eine Rune aus allen drei Bereichen.</span></div>
+<div id="result">
+<span class="small">Wähle je eine Rune aus allen drei Bereichen.</span>
+</div>
 
 <script>
-const anker = {
-  Fehu:"Besitz, Ressourcen oder materiellen Wert",
-  Uruz:"körperliche Kraft und Ausdauer",
-  Thurisaz:"einen Konflikt oder ein Hindernis",
-  Ansuz:"Worte, Wissen oder Zeichen",
-  Raidho:"einen Weg oder eine Reise",
-  Kenaz:"Erkenntnis oder verborgenes Wissen",
-  Gebo:"eine Bindung oder ein Versprechen",
-  Wunjo:"Emotion, Harmonie oder Moral"
+/* ================= ICONS ================= */
+const icons={
+ Fehu:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 10l15-5M20 18l15-5"/></svg>`,
+ Uruz:`<svg viewBox="0 0 40 40"><path d="M10 35L20 5l10 30"/></svg>`,
+ Thurisaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l10 6-10 6"/></svg>`,
+ Ansuz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l12 8"/></svg>`,
+ Raidho:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 20h16L12 5"/></svg>`,
+ Kenaz:`<svg viewBox="0 0 40 40"><path d="M28 5L12 20l16 15"/></svg>`,
+ Gebo:`<svg viewBox="0 0 40 40"><path d="M10 10l20 20M30 10L10 30"/></svg>`,
+ Wunjo:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 15l12 8"/></svg>`,
+
+ Hagalaz:`<svg viewBox="0 0 40 40"><path d="M10 5v30M30 5v30M10 20h20"/></svg>`,
+ Nauthiz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M10 25l20-10"/></svg>`,
+ Isa:`<svg viewBox="0 0 40 40"><path d="M20 5v30"/></svg>`,
+ Jera:`<svg viewBox="0 0 40 40"><path d="M10 30l10-10-10-10M30 10l-10 10 10 10"/></svg>`,
+ Eihwaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l-8 8 8 8"/></svg>`,
+ Perthro:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 5l16 10-16 10"/></svg>`,
+ Algiz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l-8 8M20 12l8 8"/></svg>`,
+ Sowilo:`<svg viewBox="0 0 40 40"><path d="M10 8l20 12-20 12"/></svg>`,
+
+ Tiwaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M14 11l6-6 6 6"/></svg>`,
+ Berkano:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 5c10 5 10 10 0 15M12 20c10 5 10 10 0 15"/></svg>`,
+ Ehwaz:`<svg viewBox="0 0 40 40"><path d="M10 5v30M30 5v30M10 12l20 16"/></svg>`,
+ Mannaz:`<svg viewBox="0 0 40 40"><path d="M12 35V5l16 30V5"/></svg>`,
+ Laguz:`<svg viewBox="0 0 40 40"><path d="M20 5v30l10-10"/></svg>`,
+ Ingwaz:`<svg viewBox="0 0 40 40"><path d="M10 20l10-10 10 10-10 10z"/></svg>`,
+ Dagaz:`<svg viewBox="0 0 40 40"><path d="M10 20l10-10 10 10-10 10z"/></svg>`,
+ Othala:`<svg viewBox="0 0 40 40"><path d="M20 5l10 10-10 20-10-20z"/></svg>`
 };
 
-const fluss = {
-  Hagalaz:"chaotisch und zerstörerisch",
-  Nauthiz:"durch Zwang und Entbehrung",
-  Isa:"verzögernd oder erstarrend",
-  Jera:"langsam, aber unausweichlich",
-  Eihwaz:"geschützt im Übergang",
-  Perthro:"unberechenbar und vom Schicksal gelenkt",
-  Algiz:"bewahrend und abschirmend",
-  Sowilo:"klar, offen und erfolgreich"
+/* ================= DATA ================= */
+const anker={
+ Fehu:{
+  text:"Die Rune klammert sich an Besitz und Wert.",
+  flavor:"Reichtum fühlt den Ruf der Magie.",
+ },
+ Uruz:{
+  text:"Die Magie greift nach Fleisch und Kraft.",
+  flavor:"Muskeln spannen sich schmerzhaft an.",
+ },
+ Thurisaz:{
+  text:"Das Zeichen ruft Konflikt und Widerstand.",
+  flavor:"Etwas stellt sich dir in den Weg.",
+ },
+ Ansuz:{
+  text:"Die Rune flüstert mit Stimmen und Zeichen.",
+  flavor:"Worte gewinnen Macht.",
+ },
+ Raidho:{
+  text:"Die Magie bindet sich an einen Weg.",
+  flavor:"Bewegung wird Schicksal.",
+ },
+ Kenaz:{
+  text:"Erkenntnis brennt sich ins Bewusstsein.",
+  flavor:"Verborgenes wird sichtbar.",
+ },
+ Gebo:{
+  text:"Die Kraft entsteht aus einer Bindung.",
+  flavor:"Ein Geben fordert ein Nehmen.",
+ },
+ Wunjo:{
+  text:"Emotionen werden zum Träger der Magie.",
+  flavor:"Freude oder Verzweiflung tragen den Zauber.",
+ }
 };
 
-const eid = {
-  Tiwaz:"einen Vorteil im Konflikt zu erzwingen",
-  Berkano:"Heilung oder Wachstum hervorzubringen",
-  Ehwaz:"Zusammenarbeit oder Bewegung zu stärken",
-  Mannaz:"Einsicht oder Selbsterkenntnis zu schenken",
-  Laguz:"Intuition und Wahrnehmung zu öffnen",
-  Ingwaz:"Kraft für später zu binden",
-  Dagaz:"einen unumkehrbaren Wendepunkt einzuleiten",
-  Othala:"Besitz, Herkunft oder Erbe zu sichern"
+const fluss={
+ Hagalaz:{
+  text:"Die Magie wirkt unkontrolliert.",
+  price:["zerstörte Ausrüstung","körperliche Verletzung","verbrannte Umgebung"]
+ },
+ Nauthiz:{
+  text:"Die Kraft fordert Mangel und Opfer.",
+  price:["Erschöpfung","Blut als Opfer","Verlust eines Werts"]
+ },
+ Isa:{
+  text:"Die Magie erstarrt und verzögert.",
+  price:["Zeitverlust","Kälteschock","emotionale Leere"]
+ },
+ Jera:{
+  text:"Die Wirkung reift mit der Zeit.",
+  price:["Geduld","anhaltende Verpflichtung"]
+ },
+ Eihwaz:{
+  text:"Die Magie schützt einen Übergang.",
+  price:["vorübergehende Lähmung","Bindung an Ort"]
+ },
+ Perthro:{
+  text:"Der Ausgang liegt im Zufall.",
+  price:["SL bestimmt geheim","unerwartete Konsequenz"]
+ },
+ Algiz:{
+  text:"Schutz dominiert die Wirkung.",
+  price:["begrenzter Effekt","auffällige Runen"]
+ },
+ Sowilo:{
+  text:"Die Kraft ist klar und offen.",
+  price:["Sichtbarkeit","neidische Aufmerksamkeit"]
+ }
 };
 
-let pick = {anker:null, fluss:null, eid:null};
+const eid={
+ Tiwaz:"einen entscheidenden Vorteil im Konflikt zu erzwingen",
+ Berkano:"Heilung oder Wachstum hervorzubringen",
+ Ehwaz:"Zusammenarbeit oder Bewegung zu stärken",
+ Mannaz:"Erkenntnis und Selbsterkenntnis zu erzwingen",
+ Laguz:"Intuition und Wahrnehmung zu öffnen",
+ Ingwaz:"Macht für später zu speichern",
+ Dagaz:"einen unumkehrbaren Wendepunkt einzuleiten",
+ Othala:"Besitz, Blut oder Erbe zu binden"
+};
 
-function draw(target, data, key){
-  const el = document.getElementById(target);
-  Object.keys(data).forEach(name=>{
-    const b=document.createElement("button");
-    b.className="rune";
-    b.textContent=name;
-    b.onclick=()=>{
-      pick[key]=name;
-      [...el.children].forEach(x=>x.classList.remove("active"));
-      b.classList.add("active");
-    };
-    el.appendChild(b);
-  });
+let pick={anker:null,fluss:null,eid:null};
+
+/* ================= RENDER ================= */
+function draw(target,data,key){
+ const el=document.getElementById(target);
+ Object.keys(data).forEach(name=>{
+  const b=document.createElement("button");
+  b.className="rune";
+  b.innerHTML=(icons[name]||"")+name;
+  b.onclick=()=>{
+    pick[key]=name;
+    [...el.children].forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+  };
+  el.appendChild(b);
+ });
 }
 
 draw("anker",anker,"anker");
 draw("fluss",fluss,"fluss");
 draw("eid",eid,"eid");
 
+/* ================= CAST ================= */
 document.getElementById("cast").onclick=()=>{
-  if(!pick.anker||!pick.fluss||!pick.eid){
-    result.innerHTML="<span class='small'>Alle drei Runen müssen gewählt sein.</span>";
-    return;
-  }
+ if(!pick.anker||!pick.fluss||!pick.eid){
+  result.innerHTML="<span class='small'>Alle drei Runen müssen gewählt sein.</span>";
+  return;
+ }
 
-  result.innerHTML=`
+ const prices=fluss[pick.fluss].price;
+ const price=prices[Math.floor(Math.random()*prices.length)];
+
+ result.innerHTML=`
 <b>RITUALWIRKUNG</b><hr>
-Durch <b>${pick.anker}</b> wirkt die Magie auf
-<b>${anker[pick.anker]}</b>.<br>
-Der Fluss der Kraft ist <b>${fluss[pick.fluss]}</b>.<br>
-Das Ritual wird gebunden, um <b>${eid[pick.eid]}</b>.<hr>
-<span class="small">Details, Preis und Konsequenzen bestimmt die Spielleitung.</span>
+<b>Anker:</b> ${anker[pick.anker].text}<br>
+<i>${anker[pick.anker].flavor}</i><br><br>
+<b>Fluss:</b> ${fluss[pick.fluss].text}<br>
+<b>Preis:</b> ${price}<br><br>
+<b>Eid:</b> Das Ritual wird gebunden, um <b>${eid[pick.eid]}</b>.<hr>
+<span class="small">Die Spielleitung entscheidet über genaue Auslegung & Folgen.</span>
 `;
 };
 </script>
