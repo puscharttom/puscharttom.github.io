@@ -92,7 +92,7 @@ h1{
   transform:scale(.98);
 }
 
-/* NEU: Reset-Button */
+/* Reset-Button */
 #reset{
   width:100%;
   padding:.9rem;
@@ -202,6 +202,44 @@ body.manifest .wheel{
 }
 #result.show::before{
   opacity:1;
+}
+
+/* ===== TRACKING-UI ===== */
+#effect-ui{
+  margin-top:.6rem;
+  padding:.6rem .8rem;
+  border-radius:.8rem;
+  background:rgba(10,6,18,.9);
+  border:1px solid #4b356f;
+  font-size:.8rem;
+}
+#effect-ui b{
+  font-size:.8rem;
+}
+#effect-ui label{
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  margin-top:.35rem;
+}
+#effect-ui input[type="checkbox"]{
+  width:1rem;
+  height:1rem;
+}
+#effect-ui input[type="text"],
+#effect-ui input[type="number"]{
+  flex:1;
+  padding:.2rem .35rem;
+  border-radius:.4rem;
+  border:1px solid #5a3d88;
+  background:rgba(5,3,12,.9);
+  color:#eee;
+  font-size:.8rem;
+}
+#effect-ui small{
+  opacity:.7;
+  display:block;
+  margin-top:.3rem;
 }
 </style>
 </head>
@@ -339,6 +377,90 @@ const EFFECTS = {
   }
 };
 
+/* ===== EFFEKT-METADATEN ===== */
+const EFFECT_META = {
+  Fehu:{
+    Berkano:"charges",
+    Tiwaz:"single_use",
+    Algiz:"item_bound",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"item_bound"
+  },
+  Uruz:{
+    Berkano:"ongoing_buff",
+    Tiwaz:"charges",
+    Algiz:"ongoing_buff",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"single_use"
+  },
+  Thurisaz:{
+    Berkano:"single_use",
+    Tiwaz:"ongoing_buff",
+    Algiz:"single_use",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"item_bound"
+  },
+  Ansuz:{
+    Berkano:"ongoing_buff",
+    Tiwaz:"single_use",
+    Algiz:"ongoing_buff",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"item_bound"
+  },
+  Raidho:{
+    Berkano:"ongoing_buff",
+    Tiwaz:"ongoing_buff",
+    Algiz:"ongoing_buff",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"single_use"
+  },
+  Kenaz:{
+    Berkano:"single_use",
+    Tiwaz:"ongoing_buff",
+    Algiz:"ongoing_buff",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"ongoing_buff"
+  },
+  Gebo:{
+    Berkano:"social_token",
+    Tiwaz:"ongoing_buff",
+    Algiz:"single_use",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"social_token"
+  },
+  Wunjo:{
+    Berkano:"ongoing_buff",
+    Tiwaz:"ongoing_buff",
+    Algiz:"ongoing_buff",
+    Dagaz:"single_use",
+    Ingwaz:"charges",
+    Laguz:"single_use",
+    Mannaz:"ongoing_buff",
+    Othala:"single_use"
+  }
+};
+
 /* ===== FLUSS-RUNEN ===== */
 const FLUSS = {
   Sowilo:{
@@ -380,16 +502,14 @@ let pick = { anker:null, eid:null, fluss:null };
 /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
 function buildWheel(id, keys, storeKey){
   const el = document.getElementById(id);
-  const repeat = 5;         // 5 Blöcke hintereinander
-  const centerIndex = 2;    // mittlerer Block (0–4)
+  const repeat = 5;
+  const centerIndex = 2;
   const runes = [];
 
-  // oberer Spacer
   const top = document.createElement("div");
   top.className = "spacer";
   el.appendChild(top);
 
-  // mehrfach Runen einfügen
   for(let i=0;i<repeat;i++){
     keys.forEach(name=>{
       const d = document.createElement("div");
@@ -404,19 +524,16 @@ function buildWheel(id, keys, storeKey){
     });
   }
 
-  // unterer Spacer
   const bottom = document.createElement("div");
   bottom.className = "spacer";
   el.appendChild(bottom);
 
-  // Start: mittlerer Block
   requestAnimationFrame(()=>{
     if(!runes.length) return;
     const runeHeight = runes[0].offsetHeight || 1;
     const block = runeHeight * keys.length;
     el.scrollTop = block * centerIndex;
 
-    // Initial aktive Rune bestimmen
     const rect = el.getBoundingClientRect();
     let best = null;
     let bestDist = Infinity;
@@ -432,16 +549,13 @@ function buildWheel(id, keys, storeKey){
     }
   });
 
-  // Scroll-Logik
   el.addEventListener("scroll",()=>{
     if(!runes.length) return;
     const runeHeight = runes[0].offsetHeight || 1;
     const block = runeHeight * keys.length;
 
-    // erst springen wenn man den mittleren Bereich wirklich verlässt:
-    // nach ca. 2 Blöcken nach oben/unten
-    const lowerThreshold = block * (centerIndex - 1.5); // 0.5 Block
-    const upperThreshold = block * (centerIndex + 1.5); // 3.5 Block
+    const lowerThreshold = block * (centerIndex - 1.5);
+    const upperThreshold = block * (centerIndex + 1.5);
 
     if(el.scrollTop < lowerThreshold){
       el.scrollTop += block * 2;
@@ -474,27 +588,95 @@ buildWheel("anker", Object.keys(OMEN), "anker");
 buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
 buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
+/* ===== HILFSFUNKTION: TRACKING-UI ERZEUGEN ===== */
+function buildTrackingUI(anker, eid){
+  const metaType = EFFECT_META[anker]?.[eid] || null;
+  if(!metaType) return "";
+
+  let controls = "";
+
+  switch(metaType){
+    case "single_use":
+      controls = `
+        <label>
+          <input type="checkbox" id="effect-used">
+          <span>Effekt wurde bereits eingesetzt</span>
+        </label>
+        <small>Dieser Effekt ist nur einmal pro Ritual nutzbar.</small>
+      `;
+      break;
+    case "charges":
+      controls = `
+        <label>
+          <span>Ladungen verbleibend:</span>
+          <input type="number" id="effect-charges" min="0" step="1">
+        </label>
+        <small>Nutze dieses Feld, um verbrauchte Ladungen mitzuzählen.</small>
+      `;
+      break;
+    case "item_bound":
+      controls = `
+        <label>
+          <span>Gebunden an Gegenstand:</span>
+          <input type="text" id="effect-item" placeholder="Name oder Beschreibung">
+        </label>
+        <small>Merke dir, welches Item von diesem Effekt geprägt ist.</small>
+      `;
+      break;
+    case "social_token":
+      controls = `
+        <label>
+          <span>Wer schuldet dir etwas?</span>
+          <input type="text" id="effect-social" placeholder="Name / Gruppe / Ort">
+        </label>
+        <small>Notiere, wer dir den Gefallen schuldet.</small>
+      `;
+      break;
+    case "ongoing_buff":
+      controls = `
+        <label>
+          <input type="checkbox" id="effect-active" checked>
+          <span>Buff ist aktuell aktiv</span>
+        </label>
+        <small>Nutze das Häkchen, um dir zu merken, ob der Effekt noch wirkt.</small>
+      `;
+      break;
+    default:
+      return "";
+  }
+
+  return `
+    <div id="effect-ui">
+      <b>🧿 TRACKING</b><br>
+      ${controls}
+    </div>
+  `;
+}
+
 /* ===== RITUAL WIRKEN ===== */
 document.getElementById("cast").onclick = () => {
-  document.body.classList.add("manifest"); // Manifestations-Phase aktiv
+  document.body.classList.add("manifest");
 
   if(!pick.anker || !pick.eid || !pick.fluss) return;
 
   const omen  = OMEN[pick.anker];
-  const effect = EFFECTS[pick.anker][pick.eid];
+  const effectText = EFFECTS[pick.anker][pick.eid];
   const flow  = FLUSS[pick.fluss];
+
+  const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
 
   const res = document.getElementById("result");
   res.innerHTML = `
     <b>🕯️ OMEN</b><br><i>${omen}</i>
     <hr>
     <b>⚔️ EFFEKT</b><br>
-    ${effect}<br>
+    ${effectText}<br>
     <b>Dauer:</b> ${flow.dur}
     <hr>
     <b>⚠️ PREIS</b><br>
     ${flow.price}
     <hr>
+    ${trackingHtml}
     <span class="small">
       Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
     </span>
