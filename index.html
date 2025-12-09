@@ -115,6 +115,49 @@ hr{
   opacity:.7;
   font-size:.75rem;
 }
+/* ===== ZENTRIER-MARKER (RITUAL-FOKUS) ===== */
+
+/* Fokuslinie */
+.wheel::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:6%;
+  right:6%;
+  height:2px;
+  transform:translateY(-50%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(190,160,255,.95),
+    transparent
+  );
+  box-shadow:
+    0 0 10px rgba(190,160,255,.8),
+    0 0 22px rgba(120,80,200,.6);
+  pointer-events:none;
+  z-index:5;
+}
+
+/* Fokusfeld (sanfter Nebel um die Linie) */
+.wheel::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  height:46px;
+  transform:translateY(-50%);
+  background:radial-gradient(
+    ellipse at center,
+    rgba(160,120,220,.18) 0%,
+    rgba(160,120,220,.08) 35%,
+    transparent 70%
+  );
+  pointer-events:none;
+  z-index:4;
+}
+
 </style>
 </head>
 
