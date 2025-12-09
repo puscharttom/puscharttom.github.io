@@ -52,6 +52,7 @@ h1{
   height:220px;
   overflow-y:auto;
   scroll-snap-type:y mandatory;
+  position:relative;
 }
 .spacer{
   height:80px;
@@ -115,6 +116,7 @@ hr{
   opacity:.7;
   font-size:.75rem;
 }
+
 /* ===== ZENTRIER-MARKER (RITUAL-FOKUS) ===== */
 
 /* Fokuslinie */
@@ -158,6 +160,34 @@ hr{
   z-index:4;
 }
 
+/* ===== MANIFESTATIONS-PHASE ===== */
+
+/* Räder treten zurück */
+body.manifest .wheel{
+  filter:grayscale(.6) brightness(.75);
+}
+
+/* Ergebnis erscheint „beschworen“ */
+#result{
+  position:relative;
+}
+#result::before{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border-radius:1.2rem;
+  background:radial-gradient(
+    circle at top,
+    rgba(180,140,255,.35),
+    transparent 70%
+  );
+  opacity:0;
+  transition:.6s ease;
+  pointer-events:none;
+}
+#result.show::before{
+  opacity:1;
+}
 </style>
 </head>
 
@@ -429,6 +459,8 @@ buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
 /* ===== RITUAL WIRKEN ===== */
 document.getElementById("cast").onclick = () => {
+  document.body.classList.add("manifest"); // << NEU: Manifestations-Phase aktiv
+
   if(!pick.anker || !pick.eid || !pick.fluss) return;
 
   const omen  = OMEN[pick.anker];
