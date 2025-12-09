@@ -526,6 +526,9 @@ const FLUSS = {
 
 let pick = { anker:null, eid:null, fluss:null };
 
+const STORAGE_KEY = "runenritual_state_v1";
+
+
 /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
 function buildWheel(id, keys, storeKey){
   const el = document.getElementById(id);
@@ -680,6 +683,77 @@ function buildTrackingUI(anker, eid){
   `;
 }
 
+function saveRitualState(){
+  const state = {
+    pick,
+    manifest: document.body.classList.contains("manifest"),
+    tracking: {}
+  };
+
+  const ui = document.getElementById("effect-ui");
+  if(ui){
+    ui.querySelectorAll("input").forEach(input=>{
+      if(input.type === "checkbox"){
+        state.tracking[input.id] = input.checked;
+      } else {
+        state.tracking[input.id] = input.value;
+      }
+    });
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadRitualState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return;
+
+  try{
+    const state = JSON.parse(raw);
+    if(!state.pick) return;
+
+    pick = state.pick;
+
+    // Ergebnis erneut anzeigen
+    document.body.classList.add("manifest");
+
+    const omen  = OMEN[pick.anker];
+    const effectText = EFFECTS[pick.anker][pick.eid];
+    const flow  = FLUSS[pick.fluss];
+    const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
+
+    const res = document.getElementById("result");
+    res.innerHTML = `
+      <b>🕯️ OMEN</b><br><i>${omen}</i>
+      <hr>
+      <b>⚔️ EFFEKT</b><br>
+      ${effectText}<br>
+      <b>Dauer:</b> ${flow.dur}
+      <hr>
+      <b>⚠️ PREIS</b><br>
+      ${flow.price}
+      <hr>
+      ${trackingHtml}
+      <span class="small">
+        Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+      </span>
+    `;
+    res.classList.add("show");
+
+    // Tracking-Werte zurücksetzen
+    if(state.tracking){
+      Object.entries(state.tracking).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(el.type === "checkbox") el.checked = val;
+        else el.value = val;
+      });
+    }
+  }catch(e){
+    console.warn("Runenritual konnte Zustand nicht laden", e);
+  }
+}
+
 /* ===== RITUAL WIRKEN ===== */
 document.getElementById("cast").onclick = () => {
   document.body.classList.add("manifest");
@@ -709,10 +783,12 @@ document.getElementById("cast").onclick = () => {
     </span>
   `;
   res.classList.add("show");
+  saveRitualState();
 };
 
 /* ===== LONG REST / RESET ===== */
 document.getElementById("reset").onclick = () => {
+  localStorage.removeItem(STORAGE_KEY); // ✅ HIER
   document.body.classList.remove("manifest");
   const res = document.getElementById("result");
   res.classList.remove("show");
@@ -722,6 +798,18 @@ document.getElementById("reset").onclick = () => {
     </span>
   `;
 };
+  document.addEventListener("change", e=>{
+  if(e.target.closest("#effect-ui")){
+    saveRitualState();
+  }
+});
+document.addEventListener("input", e=>{
+  if(e.target.closest("#effect-ui")){
+    saveRitualState();
+  }
+});
+loadRitualState();
+
 </script>
 </body>
 </html>
