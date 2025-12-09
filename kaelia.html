@@ -11,14 +11,25 @@
   --accent-main: rgba(255,90,60,.95);
   --accent-soft: rgba(220,70,50,.4);
   --accent-shadow: rgba(255,120,90,.6);
+
+  --char-bg: url("https://i.imgur.com/m0yeZRx.jpeg");
 }
 
 body{
   margin:0;
   padding:1rem;
-  background:radial-gradient(circle at top,#2a0c07 0%,#080202 75%);
-  color:#ffe9e4;
   font-family:Georgia,serif;
+  color:#ffe9e6;
+
+  /* INFERNALES FEUER / GLUT-HINTERGRUND */
+  background:
+    linear-gradient(
+      rgba(20,4,2,0.82),
+      rgba(20,4,2,0.82)
+    ),
+    var(--char-bg) center / cover fixed no-repeat;
+
+  min-height:100vh;
 }
 
 .sub{
