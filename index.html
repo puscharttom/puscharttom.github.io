@@ -180,7 +180,8 @@ hr{
 /* Räder treten zurück */
 body.manifest .wheel{
   filter:grayscale(.6) brightness(.75);
-  pointer-events:none; /* <-- NEU: nach Ritual locked */
+  pointer-events:none;
+  overflow:hidden; /* 🔒 DAS fehlte */
 }
 
 /* Ergebnis erscheint „beschworen“ */
