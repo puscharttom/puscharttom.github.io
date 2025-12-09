@@ -197,7 +197,6 @@ body.manifest .wheel{
 <body>
 
 <div class="title-image">
-  <!-- Du kannst hier ein eigenes PNG verlinken -->
   <img src="https://i.imgur.com/jzezDVQ.png" alt="Runenritual – Kallistra Dreadvine">
 </div>
 
@@ -220,6 +219,9 @@ body.manifest .wheel{
 </div>
 
 <script>
+const CHARACTER_ID = "kallistra";
+const STORAGE_KEY = `runenritual_${CHARACTER_ID}_v1`;
+
 /* ===== RUNENZEICHEN ===== */
 const RUNES = {
   Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
@@ -448,9 +450,6 @@ const FLUSS = {
 
 let pick = { anker:null, eid:null, fluss:null };
 
-const STORAGE_KEY = "runenritual_state_v1";
-
-
 /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
 function buildWheel(id, keys, storeKey){
   const el = document.getElementById(id);
@@ -636,7 +635,6 @@ function loadRitualState(){
 
     pick = state.pick;
 
-    // Ergebnis erneut anzeigen
     document.body.classList.add("manifest");
 
     const omen  = OMEN[pick.anker];
@@ -662,7 +660,6 @@ function loadRitualState(){
     `;
     res.classList.add("show");
 
-    // Tracking-Werte zurücksetzen
     if(state.tracking){
       Object.entries(state.tracking).forEach(([id,val])=>{
         const el = document.getElementById(id);
@@ -710,7 +707,7 @@ document.getElementById("cast").onclick = () => {
 
 /* ===== LONG REST / RESET ===== */
 document.getElementById("reset").onclick = () => {
-  localStorage.removeItem(STORAGE_KEY); // ✅ HIER
+  localStorage.removeItem(STORAGE_KEY);
   document.body.classList.remove("manifest");
   const res = document.getElementById("result");
   res.classList.remove("show");
@@ -720,7 +717,8 @@ document.getElementById("reset").onclick = () => {
     </span>
   `;
 };
-  document.addEventListener("change", e=>{
+
+document.addEventListener("change", e=>{
   if(e.target.closest("#effect-ui")){
     saveRitualState();
   }
@@ -730,8 +728,8 @@ document.addEventListener("input", e=>{
     saveRitualState();
   }
 });
-loadRitualState();
 
+loadRitualState();
 </script>
 </body>
 </html>
