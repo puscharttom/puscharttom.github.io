@@ -23,6 +23,29 @@ h1{
   font-size:.8rem;
   margin-bottom:1rem;
 }
+  
+/* ===== TITELBILD ===== */
+.title-image{
+  display:flex;
+  justify-content:center;
+  margin:.4rem 0 .8rem;
+}
+
+.title-image img{
+  max-width:100%;
+  width:420px;        /* Desktop-Größe */
+  height:auto;
+  filter:
+    drop-shadow(0 0 18px rgba(180,140,255,.65))
+    drop-shadow(0 0 40px rgba(90,50,150,.35));
+}
+
+/* Mobile */
+@media (max-width:600px){
+  .title-image img{
+    width:88%;
+  }
+}
 
 /* Drehräder-Layout */
 .wheels{
@@ -247,7 +270,9 @@ body.manifest .wheel{
 </head>
 
 <body>
-<h1>RUNENRITUAL</h1>
+<div class="title-image">
+  <img src="https://i.imgur.com/jzezDVQ.png" alt="Runenritual der Hexen">
+</div>
 <div class="sub">Drehe die Zeichen · 1× pro Long Rest</div>
 
 <div class="wheels">
