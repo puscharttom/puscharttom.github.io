@@ -215,6 +215,9 @@ body.manifest .wheel{
 </div>
 
 <script>
+const CHARACTER_ID = "ophelia";
+
+const STORAGE_KEY = `runenritual_${CHARACTER_ID}_v1`;
 /* ===== RUNENZEICHEN ===== */
 const RUNES = {
   Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
@@ -617,7 +620,7 @@ function saveRitualState(){
       }
     });
   }
-  const CHARACTER_ID = "ophelia";
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
