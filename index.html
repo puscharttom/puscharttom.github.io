@@ -19,17 +19,26 @@ body{
   color:#f0e6f0;
 }
 
-h1{
-  text-align:center;
-  font-size:1.8rem;
-  margin-bottom:.3rem;
-  letter-spacing:.04em;
+/* ===== TITLE IMAGE ===== */
+.title-image{
+  display:flex;
+  justify-content:center;
+  margin-bottom:1rem;
+}
+
+.title-image img{
+  width:420px;
+  max-width:90%;
+  height:auto;
+  filter:
+    drop-shadow(0 0 18px rgba(190,140,255,.6))
+    drop-shadow(0 0 40px rgba(150,90,230,.3));
 }
 
 .subtitle{
   text-align:center;
   opacity:.7;
-  margin-bottom:2rem;
+  margin-bottom:2.2rem;
   font-size:.9rem;
 }
 
@@ -72,7 +81,7 @@ h1{
 .name{
   margin-top:.6rem;
   font-size:.85rem;
-  letter-spacing:.12em;
+  letter-spacing:.14em;
   opacity:.8;
 }
 
@@ -103,8 +112,14 @@ footer{
 
 <body>
 
-<h1>Zirkel der Hexen</h1>
-<div class="subtitle">Wähle eine Hexe, um ihr Runenritual zu wirken</div>
+<!-- ===== TITLE IMAGE ===== -->
+<div class="title-image">
+  <img src="https://i.imgur.com/jzezDVQ.png" alt="Zirkel der Hexen – Runenritual">
+</div>
+
+<div class="subtitle">
+  Wähle eine Hexe, um ihr Runenritual zu wirken
+</div>
 
 <div class="grid">
 
@@ -127,7 +142,7 @@ footer{
   <!-- MERIEL -->
   <a class="card meriel" href="meriel.html">
     <div class="token">
-      <img src="https://i.imgur.com/WwwFeAZ.png" alt="Meriel">
+      <img src="https://i.imgur.com/WwwFeAZ.png" alt="Meriel Meadowshade">
     </div>
     <div class="name">MERIEL</div>
   </a>
@@ -135,7 +150,7 @@ footer{
   <!-- KAELIA -->
   <a class="card kaelia" href="kaelia.html">
     <div class="token">
-      <img src="https://i.imgur.com/i50OJ2q.png" alt="Kaelia">
+      <img src="https://i.imgur.com/i50OJ2q.png" alt="Kaelia Emberbrand">
     </div>
     <div class="name">KAELIA</div>
   </a>
