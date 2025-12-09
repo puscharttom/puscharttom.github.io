@@ -91,6 +91,21 @@ h1{
 #cast:active{
   transform:scale(.98);
 }
+
+/* NEU: Reset-Button */
+#reset{
+  width:100%;
+  padding:.9rem;
+  font-size:1rem;
+  margin-top:.6rem;
+  background:linear-gradient(180deg,#2a2a3c,#14141f);
+  border:1px solid #6c55a3;
+  border-radius:1rem;
+}
+#reset:active{
+  transform:scale(.98);
+}
+
 #result{
   margin-top:1rem;
   padding:1.2rem;
@@ -211,6 +226,8 @@ body.manifest .wheel{
 </div>
 
 <button id="cast">🔮 RITUAL WIRKEN</button>
+<button id="reset">🌙 LONG REST</button>
+
 <div id="result">
   <span class="small">Drehe die Räder, bis sich eine Kombination richtig anfühlt.</span>
 </div>
@@ -459,7 +476,7 @@ buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
 /* ===== RITUAL WIRKEN ===== */
 document.getElementById("cast").onclick = () => {
-  document.body.classList.add("manifest"); // << NEU: Manifestations-Phase aktiv
+  document.body.classList.add("manifest"); // Manifestations-Phase aktiv
 
   if(!pick.anker || !pick.eid || !pick.fluss) return;
 
@@ -483,6 +500,18 @@ document.getElementById("cast").onclick = () => {
     </span>
   `;
   res.classList.add("show");
+};
+
+/* ===== LONG REST / RESET ===== */
+document.getElementById("reset").onclick = () => {
+  document.body.classList.remove("manifest");
+  const res = document.getElementById("result");
+  res.classList.remove("show");
+  res.innerHTML = `
+    <span class="small">
+      Ein neuer Tag bricht an. Die Runen schweigen.
+    </span>
+  `;
 };
 </script>
 </body>
