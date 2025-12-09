@@ -11,14 +11,25 @@
   --accent-main: rgba(90,255,140,.95);
   --accent-soft: rgba(60,200,120,.35);
   --accent-shadow: rgba(120,255,170,.6);
+
+  --char-bg: url("https://i.imgur.com/mpRWl1e.jpeg");
 }
 
 body{
   margin:0;
   padding:1rem;
-  background:radial-gradient(circle at top,#0f1c12 0%,#020603 75%);
-  color:#e8ffe8;
   font-family:Georgia,serif;
+  color:#e8ffe8;
+
+  /* GIFTIGER WALD / SCHATTEN-HINTERGRUND */
+  background:
+    linear-gradient(
+      rgba(2,6,3,0.88),
+      rgba(2,6,3,0.88)
+    ),
+    var(--char-bg) center / cover fixed no-repeat;
+
+  min-height:100vh;
 }
 
 .sub{
