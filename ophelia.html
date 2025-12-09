@@ -443,7 +443,7 @@ const FLUSS = {
 
 let pick = { anker:null, eid:null, fluss:null };
 
-const STORAGE_KEY = "runenritual_state_v1";
+const STORAGE_KEY = `runenritual_${CHARACTER_ID}_v1`;
 
 
 /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
@@ -617,7 +617,7 @@ function saveRitualState(){
       }
     });
   }
-
+  const CHARACTER_ID = "ophelia";
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
