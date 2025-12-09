@@ -11,14 +11,25 @@
   --accent-main: rgba(120,200,120,.95);
   --accent-soft: rgba(90,170,110,.35);
   --accent-shadow: rgba(150,220,150,.6);
+
+  --char-bg: url("https://i.imgur.com/VMOz2bw.jpeg");
 }
 
 body{
   margin:0;
   padding:1rem;
-  background:radial-gradient(circle at top,#132015 0%,#040806 75%);
-  color:#f0fff0;
   font-family:Georgia,serif;
+  color:#f0fff0;
+
+  /* DRUIDISCHER CHARAKTER-HINTERGRUND */
+  background:
+    linear-gradient(
+      rgba(4,8,6,0.86),
+      rgba(4,8,6,0.86)
+    ),
+    var(--char-bg) center / cover fixed no-repeat;
+
+  min-height:100vh;
 }
 
 .sub{
