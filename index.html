@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Runenritual</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  background:radial-gradient(circle at center,#1a1024 0%,#050308 70%);
+  color:#eee;
+  font-family:Georgia,serif;
+  padding:1.2rem;
+}
+h1{
+  text-align:center;
+  letter-spacing:0.18em;
+  margin-bottom:0.3rem;
+}
+.sub{
+  text-align:center;
+  opacity:0.7;
+  font-size:0.85rem;
+  margin-bottom:1.5rem;
+}
+.section{
+  margin-bottom:1.4rem;
+  padding:1rem;
+  border:1px solid #3a2a4a;
+  border-radius:0.8rem;
+  background:rgba(15,8,25,0.7);
+}
+.section h2{
+  text-align:center;
+  font-size:1rem;
+  letter-spacing:0.12em;
+  margin-bottom:0.8rem;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0.6rem;
+}
+button.rune{
+  background:#12091c;
+  border:1px solid #44335a;
+  border-radius:0.6rem;
+  color:#eee;
+  padding:0.6rem 0.2rem;
+  font-size:0.75rem;
+}
+button.rune.active{
+  border-color:#fff;
+  box-shadow:0 0 12px rgba(200,180,255,0.6);
+  background:#1f1230;
+}
+#cast{
+  width:100%;
+  margin-top:1rem;
+  padding:0.9rem;
+  font-size:1rem;
+  background:#2b1c44;
+  border:1px solid #6c55a3;
+  color:#fff;
+  border-radius:0.7rem;
+}
+#result{
+  margin-top:1.5rem;
+  padding:1.2rem;
+  background:#0b0713;
+  border:2px solid #5a3d88;
+  border-radius:1rem;
+  box-shadow:0 0 25px rgba(120,80,200,.5);
+  min-height:4rem;
+  line-height:1.6;
+}
+hr{
+  border:none;
+  border-top:1px solid #34234f;
+  margin:0.7rem 0;
+}
+.small{
+  opacity:0.7;
+  font-size:0.75rem;
+}
+</style>
+</head>
+
+<body>
+
+<h1>RUNENRITUAL</h1>
+<div class="sub">Canting-Magie • Drei Zeichen entscheiden</div>
+
+<div class="section">
+<h2>ANKER</h2>
+<div class="grid" id="anker"></div>
+</div>
+
+<div class="section">
+<h2>FLUSS</h2>
+<div class="grid" id="fluss"></div>
+</div>
+
+<div class="section">
+<h2>EID</h2>
+<div class="grid" id="eid"></div>
+</div>
+
+<button id="cast">🔮 Ritual wirken</button>
+
+<div id="result"><span class="small">Wähle je eine Rune aus allen drei Bereichen.</span></div>
+
+<script>
+const anker = {
+  Fehu:"Besitz, Ressourcen oder materiellen Wert",
+  Uruz:"körperliche Kraft und Ausdauer",
+  Thurisaz:"einen Konflikt oder ein Hindernis",
+  Ansuz:"Worte, Wissen oder Zeichen",
+  Raidho:"einen Weg oder eine Reise",
+  Kenaz:"Erkenntnis oder verborgenes Wissen",
+  Gebo:"eine Bindung oder ein Versprechen",
+  Wunjo:"Emotion, Harmonie oder Moral"
+};
+
+const fluss = {
+  Hagalaz:"chaotisch und zerstörerisch",
+  Nauthiz:"durch Zwang und Entbehrung",
+  Isa:"verzögernd oder erstarrend",
+  Jera:"langsam, aber unausweichlich",
+  Eihwaz:"geschützt im Übergang",
+  Perthro:"unberechenbar und vom Schicksal gelenkt",
+  Algiz:"bewahrend und abschirmend",
+  Sowilo:"klar, offen und erfolgreich"
+};
+
+const eid = {
+  Tiwaz:"einen Vorteil im Konflikt zu erzwingen",
+  Berkano:"Heilung oder Wachstum hervorzubringen",
+  Ehwaz:"Zusammenarbeit oder Bewegung zu stärken",
+  Mannaz:"Einsicht oder Selbsterkenntnis zu schenken",
+  Laguz:"Intuition und Wahrnehmung zu öffnen",
+  Ingwaz:"Kraft für später zu binden",
+  Dagaz:"einen unumkehrbaren Wendepunkt einzuleiten",
+  Othala:"Besitz, Herkunft oder Erbe zu sichern"
+};
+
+let pick = {anker:null, fluss:null, eid:null};
+
+function draw(target, data, key){
+  const el = document.getElementById(target);
+  Object.keys(data).forEach(name=>{
+    const b=document.createElement("button");
+    b.className="rune";
+    b.textContent=name;
+    b.onclick=()=>{
+      pick[key]=name;
+      [...el.children].forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+    };
+    el.appendChild(b);
+  });
+}
+
+draw("anker",anker,"anker");
+draw("fluss",fluss,"fluss");
+draw("eid",eid,"eid");
+
+document.getElementById("cast").onclick=()=>{
+  if(!pick.anker||!pick.fluss||!pick.eid){
+    result.innerHTML="<span class='small'>Alle drei Runen müssen gewählt sein.</span>";
+    return;
+  }
+
+  result.innerHTML=`
+<b>RITUALWIRKUNG</b><hr>
+Durch <b>${pick.anker}</b> wirkt die Magie auf
+<b>${anker[pick.anker]}</b>.<br>
+Der Fluss der Kraft ist <b>${fluss[pick.fluss]}</b>.<br>
+Das Ritual wird gebunden, um <b>${eid[pick.eid]}</b>.<hr>
+<span class="small">Details, Preis und Konsequenzen bestimmt die Spielleitung.</span>
+`;
+};
+</script>
+
+</body>
+</html>
