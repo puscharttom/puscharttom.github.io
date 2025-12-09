@@ -126,6 +126,38 @@ body{
   pointer-events:none;
 }
 
+.back-button{
+  display:inline-block;
+  margin:0 0 1.2rem 0;
+  padding:.45rem .9rem;
+  font-size:.8rem;
+  letter-spacing:.08em;
+  text-decoration:none;
+  color:#eee;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:.6rem;
+  background:rgba(20,15,30,.55);
+  backdrop-filter:blur(3px);
+  transition:.25s ease;
+  box-shadow:
+    0 0 6px rgba(255,255,255,.08),
+    0 0 14px rgba(0,0,0,.6);
+}
+
+.back-button:hover{
+  background:rgba(40,25,70,.65);
+  box-shadow:
+    0 0 10px rgba(255,255,255,.25),
+    0 0 20px rgba(180,120,255,.25);
+  transform:translateY(-1px);
+}
+
+.back-button:active{
+  transform:scale(.97);
+  opacity:.85;
+}
+
+
 /* ===== BUTTONS ===== */
 #cast,#reset{
   width:100%;
@@ -190,6 +222,7 @@ body.manifest .wheel{
 </head>
 
 <body>
+  <a class="back-button" href="index.html">← Zurück zur Startseite</a>
 <div class="title-image">ELOWYN CHARMBRIGHT</div>
 
 <div class="sub">
