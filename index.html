@@ -6,45 +6,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-  margin:0;padding:1rem;
+  margin:0;
+  padding:1rem;
   background:radial-gradient(circle at top,#1b1230 0%,#050308 75%);
-  color:#eee;font-family:Georgia,serif;
+  color:#eee;
+  font-family:Georgia,serif;
 }
-h1{text-align:center;letter-spacing:.22em;margin:.2rem 0}
-.sub{text-align:center;opacity:.7;font-size:.8rem;margin-bottom:1rem}
+h1{
+  text-align:center;
+  letter-spacing:.22em;
+  margin:.2rem 0;
+}
+.sub{
+  text-align:center;
+  opacity:.7;
+  font-size:.8rem;
+  margin-bottom:1rem;
+}
 
-.wheels{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
-.wheel-column{display:flex;flex-direction:column}
-.label{text-align:center;font-size:.7rem;letter-spacing:.16em;opacity:.75;margin-bottom:.2rem}
+/* Drehräder-Layout */
+.wheels{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.7rem;
+  margin-bottom:1.2rem;
+}
+.wheel-column{
+  display:flex;
+  flex-direction:column;
+}
+.label{
+  text-align:center;
+  font-size:.7rem;
+  letter-spacing:.16em;
+  opacity:.75;
+  margin-bottom:.2rem;
+}
 
+/* Drehrad */
 .wheel{
-  border:1px solid #3a2a4a;border-radius:1rem;
+  border:1px solid #3a2a4a;
+  border-radius:1rem;
   background:rgba(12,8,20,.85);
-  padding:.3rem;height:220px;overflow-y:auto;
+  padding:.3rem;
+  height:220px;
+  overflow-y:auto;
   scroll-snap-type:y mandatory;
 }
-.spacer{height:80px}
-.rune{scroll-snap-align:center;text-align:center;padding:.4rem 0;opacity:.35;transition:.25s ease}
-.rune .symbol{font-size:2rem}
-.rune .name{font-size:.6rem;opacity:.7}
-.rune.active{opacity:1;transform:scale(1.15);text-shadow:0 0 14px rgba(200,160,255,.8)}
-
-#cast{
-  width:100%;padding:.9rem;font-size:1rem;
-  background:linear-gradient(180deg,#3b2a5c,#1c122f);
-  border:1px solid #6c55a3;border-radius:1rem;
+.spacer{
+  height:80px;
+}
+.rune{
+  scroll-snap-align:center;
+  text-align:center;
+  padding:.4rem 0;
+  opacity:.35;
+  transition:.25s ease;
+}
+.rune .symbol{
+  font-size:2rem;
+  line-height:1;
+}
+.rune .name{
+  font-size:.6rem;
+  opacity:.7;
+  margin-top:.15rem;
+}
+.rune.active{
+  opacity:1;
+  transform:scale(1.15);
+  text-shadow:0 0 14px rgba(200,160,255,.8);
 }
 
+/* Button & Ergebnis */
+#cast{
+  width:100%;
+  padding:.9rem;
+  font-size:1rem;
+  background:linear-gradient(180deg,#3b2a5c,#1c122f);
+  border:1px solid #6c55a3;
+  border-radius:1rem;
+}
+#cast:active{
+  transform:scale(.98);
+}
 #result{
-  margin-top:1rem;padding:1.2rem;
-  border:2px solid #5a3d88;border-radius:1rem;
+  margin-top:1rem;
+  padding:1.2rem;
+  border:2px solid #5a3d88;
+  border-radius:1rem;
   background:radial-gradient(circle at top,#140e22 0%,#07040b 70%);
   box-shadow:0 0 28px rgba(120,80,200,.6);
-  line-height:1.6;opacity:0;transform:translateY(8px);transition:.6s ease;
+  line-height:1.6;
+  opacity:0;
+  transform:translateY(8px);
+  transition:.6s ease;
 }
-#result.show{opacity:1;transform:none}
-hr{border:none;border-top:1px solid #34234f;margin:.8rem 0}
-.small{opacity:.7;font-size:.75rem}
+#result.show{
+  opacity:1;
+  transform:none;
+}
+hr{
+  border:none;
+  border-top:1px solid #34234f;
+  margin:.8rem 0;
+}
+.small{
+  opacity:.7;
+  font-size:.75rem;
+}
 </style>
 </head>
 
@@ -68,175 +138,276 @@ hr{border:none;border-top:1px solid #34234f;margin:.8rem 0}
 </div>
 
 <button id="cast">🔮 RITUAL WIRKEN</button>
-<div id="result"><span class="small">Drehe die Räder, bis sich eine Rune richtig anfühlt.</span></div>
+<div id="result">
+  <span class="small">Drehe die Räder, bis sich eine Kombination richtig anfühlt.</span>
+</div>
 
 <script>
-/* ===== RUNEN ===== */
-const RUNES={
- Fehu:"ᚠ",Uruz:"ᚢ",Thurisaz:"ᚦ",Ansuz:"ᚨ",Raidho:"ᚱ",Kenaz:"ᚲ",Gebo:"ᚷ",Wunjo:"ᚹ",
- Berkano:"ᛒ",Tiwaz:"ᛏ",Algiz:"ᛉ",Dagaz:"ᛞ",Ingwaz:"ᛜ",Laguz:"ᛚ",Mannaz:"ᛗ",Othala:"ᛟ",
- Sowilo:"ᛊ",Jera:"ᛃ",Isa:"ᛁ",Hagalaz:"ᚺ",Perthro:"ᛈ",Nauthiz:"ᚾ",Eihwaz:"ᛇ"
+/* ===== RUNENZEICHEN ===== */
+const RUNES = {
+  Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
+  Raidho:"ᚱ", Kenaz:"ᚲ", Gebo:"ᚷ", Wunjo:"ᚹ",
+  Berkano:"ᛒ", Tiwaz:"ᛏ", Algiz:"ᛉ", Dagaz:"ᛞ",
+  Ingwaz:"ᛜ", Laguz:"ᛚ", Mannaz:"ᛗ", Othala:"ᛟ",
+  Sowilo:"ᛊ", Jera:"ᛃ", Isa:"ᛁ", Hagalaz:"ᚺ",
+  Perthro:"ᛈ", Nauthiz:"ᚾ", Eihwaz:"ᛇ"
 };
 
-/* ===== OMEN ===== */
-const OMEN={
- Fehu:"Fehu tritt hervor – Besitz verlangt Führung.",
- Uruz:"Uruz zeigt sich – dein Körper trägt heute mehr.",
- Thurisaz:"Thurisaz blockiert den Weg – Macht kommt durch Widerstand.",
- Ansuz:"Ansuz flüstert – Worte und Zauber hören zu.",
- Raidho:"Raidho rollt – Bewegung formt das Schicksal.",
- Kenaz:"Kenaz brennt – Wahrheit duldet keinen Schatten.",
- Gebo:"Gebo fordert Austausch – nichts bleibt einseitig.",
- Wunjo:"Wunjo lächelt vorsichtig – der Geist sucht Balance."
+/* ===== OMEN PRO ANKER ===== */
+const OMEN = {
+  Fehu:"Fehu tritt hervor – Besitz verlangt Führung.",
+  Uruz:"Uruz zeigt sich – dein Körper trägt heute mehr.",
+  Thurisaz:"Thurisaz blockiert den Weg – Macht kommt durch Widerstand.",
+  Ansuz:"Ansuz flüstert – Worte und Zauber hören zu.",
+  Raidho:"Raidho rollt – Bewegung formt das Schicksal.",
+  Kenaz:"Kenaz brennt – Wahrheit duldet keinen Schatten.",
+  Gebo:"Gebo fordert Austausch – nichts bleibt einseitig.",
+  Wunjo:"Wunjo lächelt vorsichtig – der Geist sucht Balance."
 };
 
-/* ===== 64 EFFEKTE ===== */
-const EFFECTS={
- Fehu:{
-  Berkano:"1d4 zusätzliche Ladungen für ein begrenztes Item.",
-  Tiwaz:"Gold- oder Ressourcenaufwand zählt einmalig doppelt.",
-  Algiz:"Ein Besitz kann einmal nicht gestohlen oder zerstört werden.",
-  Dagaz:"Ein Handel oder Tausch gelingt automatisch.",
-  Ingwaz:"Speichere Ressourcen (bis 50 gp Äquivalent).",
-  Laguz:"Mache einen Ressourcenverlust rückgängig.",
-  Mannaz:"Advantage bei Checks mit wertvollen Gegenständen.",
-  Othala:"Ein Item ist bis zum Long Rest fest an dich gebunden."
- },
- Uruz:{
-  Berkano:"Erhalte temporäre TP (1d6 + PB).",
-  Tiwaz:"+1d4 Schaden bei STR-basierten Angriffen (1×/Runde).",
-  Algiz:"Einmal pro Runde Resistance gegen physischen Schaden.",
-  Dagaz:"Ein STR- oder CON-Save gilt automatisch als bestanden.",
-  Ingwaz:"Speichere +1d8 für einen körperlichen Wurf.",
-  Laguz:"Nach einem Miss +1d4 hinzufügen.",
-  Mannaz:"Advantage auf Athletics oder Acrobatics.",
-  Othala:"Du kannst einmal nicht prone werden."
- },
- Thurisaz:{
-  Berkano:"Der erste Treffer verursacht +1d6 Schaden.",
-  Tiwaz:"+1 auf Angriffswürfe (1×/Runde).",
-  Algiz:"Ignoriere einmal Shield/Parade.",
-  Dagaz:"Ein Angriff trifft automatisch (kein Krit).",
-  Ingwaz:"Speichere +1d10 Schaden.",
-  Laguz:"Nach einem verfehlten Angriff neu würfeln.",
-  Mannaz:"Advantage auf Angriffe gegen ein Ziel.",
-  Othala:"Deine Waffe zählt als magisch."
- },
- Ansuz:{
-  Berkano:"Nach Zauber: Temp-TP = Zaubergrad × 2.",
-  Tiwaz:"+1 auf Spell Attack oder Save-DC (1 Zauber).",
-  Algiz:"Advantage auf Concentration Saves.",
-  Dagaz:"Ein Zauber ignoriert Disadvantage.",
-  Ingwaz:"Speichere einen +1-Zaubergrad-Effekt.",
-  Laguz:"Nach Spell-Fehlschlag +1d4 auf nächsten Spell Attack.",
-  Mannaz:"Advantage auf Arcana oder Religion.",
-  Othala:"Ein Zauber ist an Ort/Objekt gebunden."
- },
- Raidho:{
-  Berkano:"+10 ft Bewegung.",
-  Tiwaz:"+10 ft Bewegung, wenn du angreifst.",
-  Algiz:"Ignoriere Difficult Terrain.",
-  Dagaz:"Du handelst nächste Runde zuerst.",
-  Ingwaz:"Speichere einen 10-ft-Teleport.",
-  Laguz:"Gegner verliert nach OA seine Reaktion.",
-  Mannaz:"Advantage auf Initiative.",
-  Othala:"Du kannst einmal nicht verschoben werden."
- },
- Kenaz:{
-  Berkano:"+1d4 Bonus auf nächsten Wahrnehmungs-/Erkenntniswurf.",
-  Tiwaz:"+1 auf Perception oder Investigation.",
-  Algiz:"Advantage gegen Illusionen.",
-  Dagaz:"Du erhältst automatisch einen wichtigen Hinweis.",
-  Ingwaz:"Speichere +1d8 für Erkenntnis.",
-  Laguz:"Nach Fehlschlag einen Wahrnehmungswurf wiederholen.",
-  Mannaz:"Advantage auf Insight.",
-  Othala:"Ein Ort bleibt für dich eindeutig erkennbar."
- },
- Gebo:{
-  Berkano:"Erhalte einen sozialen Gunst-Token.",
-  Tiwaz:"+1 auf CHA-basierte Checks.",
-  Algiz:"Einmalig immun gegen Charm.",
-  Dagaz:"Eine Bitte wird akzeptiert (im Rahmen).",
-  Ingwaz:"Speichere Advantage für sozialen Wurf.",
-  Laguz:"Nach Ablehnung einmal erneut versuchen.",
-  Mannaz:"Advantage auf Persuasion oder Deception.",
-  Othala:"Ein NPC hält sicher sein Wort."
- },
- Wunjo:{
-  Berkano:"Temp-TP nur gegen psychischen Schaden.",
-  Tiwaz:"+1 auf Rettungswürfe.",
-  Algiz:"Resistance gegen Fear oder Charm.",
-  Dagaz:"Ein mentaler Save gilt als bestanden.",
-  Ingwaz:"Speichere +1d10 für einen Save.",
-  Laguz:"Nach Save-Fehlschlag neu würfeln.",
-  Mannaz:"Advantage auf WIS- oder CHA-Saves.",
-  Othala:"Du kannst einmal nicht frightened werden."
- }
+/* ===== 64 EFFEKTE (ANKER × EID) ===== */
+const EFFECTS = {
+  Fehu:{
+    Berkano:"Erhalte 1d4 zusätzliche Ladungen für ein begrenztes Item.",
+    Tiwaz:"Gold- oder Ressourcenaufwand zählt einmalig als doppelt effektiv.",
+    Algiz:"Ein Besitz kann einmal nicht gestohlen oder zerstört werden.",
+    Dagaz:"Ein Handel oder Tausch gelingt automatisch.",
+    Ingwaz:"Speichere einen Ressourcenbonus (bis 50 gp Äquivalent).",
+    Laguz:"Nach Ressourcenverlust darfst du ihn einmal rückgängig machen.",
+    Mannaz:"Advantage bei Checks mit wertvollen Gegenständen.",
+    Othala:"Ein Item ist bis zum nächsten Long Rest fest an dich gebunden."
+  },
+  Uruz:{
+    Berkano:"Erhalte temporäre Trefferpunkte (1d6 + Proficiency Bonus).",
+    Tiwaz:"+1d4 Schaden bei STR-basierten Angriffen (1× pro Runde).",
+    Algiz:"Einmal pro Runde Resistance gegen physischen Schaden.",
+    Dagaz:"Ein STR- oder CON-Rettungswurf gilt automatisch als bestanden.",
+    Ingwaz:"Speichere +1d8 für einen körperlichen Wurf.",
+    Laguz:"Nach einem Miss darfst du +1d4 hinzufügen.",
+    Mannaz:"Advantage auf Athletics oder Acrobatics.",
+    Othala:"Du kannst einmal nicht prone werden."
+  },
+  Thurisaz:{
+    Berkano:"Dein erster Treffer verursacht +1d6 zusätzlichen Schaden.",
+    Tiwaz:"+1 auf Attack Rolls (1× pro Runde).",
+    Algiz:"Ignoriere einmal Shield oder ähnliche parierende Effekte.",
+    Dagaz:"Ein Angriff trifft automatisch (kein erzwungener Krit).",
+    Ingwaz:"Speichere +1d10 zusätzlichen Schaden.",
+    Laguz:"Nach einem verfehlten Angriff darfst du den Wurf wiederholen.",
+    Mannaz:"Advantage auf Angriffe gegen ein ausgewähltes Ziel.",
+    Othala:"Deine Waffe zählt als magisch gegen Resistenz/Immunität."
+  },
+  Ansuz:{
+    Berkano:"Nach Wirken eines Zaubers erhältst du Temp-TP = Zaubergrad × 2.",
+    Tiwaz:"+1 auf Spell Attack oder Spell Save DC (für 1 Zauber).",
+    Algiz:"Advantage auf Concentration Saves.",
+    Dagaz:"Ein Zauber ignoriert Disadvantage.",
+    Ingwaz:"Speichere einen +1-Zaubergrad-Effekt (z. B. extra Schaden/Ziele).",
+    Laguz:"Nach Zauber-Fehlschlag +1d4 auf den nächsten Spell Attack.",
+    Mannaz:"Advantage auf Arcana oder Religion.",
+    Othala:"Ein Zauber ist an einen Ort oder ein Objekt gebunden."
+  },
+  Raidho:{
+    Berkano:"Erhalte einen Bewegungs-Puffer von +10 ft.",
+    Tiwaz:"+10 ft Bewegung, wenn du in deinem Zug angreifst.",
+    Algiz:"Ignoriere Difficult Terrain.",
+    Dagaz:"Du handelst in der nächsten Runde automatisch zuerst.",
+    Ingwaz:"Speichere einen 10-ft-Teleport (Bonus Action).",
+    Laguz:"Nach einer Opportunity Attack verliert der Gegner seine Reaktion.",
+    Mannaz:"Advantage auf Initiative.",
+    Othala:"Du kannst einmal nicht bewegt oder verschoben werden."
+  },
+  Kenaz:{
+    Berkano:"+1d4 Bonus auf den nächsten Wahrnehmungs- oder Erkenntniswurf.",
+    Tiwaz:"+1 auf Perception oder Investigation.",
+    Algiz:"Advantage auf Checks gegen Illusionen.",
+    Dagaz:"Du erhältst automatisch einen wichtigen Hinweis der SL.",
+    Ingwaz:"Speichere +1d8 für einen Erkenntniswurf.",
+    Laguz:"Nach Fehlschlag darfst du einen Wahrnehmungswurf wiederholen.",
+    Mannaz:"Advantage auf Insight.",
+    Othala:"Ein Ort bleibt für dich immer erkennbar und leicht auffindbar."
+  },
+  Gebo:{
+    Berkano:"Erhalte einen sozialen Gunst-Token (kleiner Gefallen, SL legt fest).",
+    Tiwaz:"+1 auf CHA-basierte Checks.",
+    Algiz:"Du bist einmalig immun gegen Charm-Effekte.",
+    Dagaz:"Eine Bitte wird automatisch akzeptiert (im Rahmen des Möglichen).",
+    Ingwaz:"Speichere Advantage für einen späteren sozialen Wurf.",
+    Laguz:"Nach Ablehnung darfst du einmal einen zweiten Versuch starten.",
+    Mannaz:"Advantage auf Persuasion oder Deception.",
+    Othala:"Ein NPC hält dir gegenüber sicher sein Wort."
+  },
+  Wunjo:{
+    Berkano:"Erhalte temporäre TP, die nur bei psychischem Schaden verbraucht werden.",
+    Tiwaz:"+1 auf Rettungswürfe.",
+    Algiz:"Resistance gegen Fear oder Charm.",
+    Dagaz:"Ein WIS- oder CHA-Save gilt automatisch als bestanden.",
+    Ingwaz:"Speichere +1d10 Bonus auf einen Save.",
+    Laguz:"Nach einem misslungenen Save darfst du den Wurf wiederholen.",
+    Mannaz:"Advantage auf WIS- oder CHA-Saves.",
+    Othala:"Du kannst einmal nicht frightened werden."
+  }
 };
 
-/* ===== FLUSS ===== */
-const FLUSS={
- Sowilo:{dur:"Bis zum nächsten Long Rest",price:"Kein zusätzlicher Preis."},
- Jera:{dur:"24 Stunden (verzögert)",price:"Kann nicht vorzeitig beendet werden."},
- Isa:{dur:"1 Encounter",price:"Bewegung halbiert oder Bonusaktion blockiert."},
- Hagalaz:{dur:"1 Encounter",price:"1d6 Schaden beim Wirken."},
- Perthro:{dur:"Bis Trigger",price:"Fehlwirkung, falls nicht ausgelöst."},
- Nauthiz:{dur:"Bis zum nächsten Long Rest",price:"1 Stufe Erschöpfung."},
- Eihwaz:{dur:"Bis Schwelle erreicht",price:"Danach Nachteil auf nächsten Wurf."},
- Algiz:{dur:"Bis zum nächsten Long Rest",price:"Abgeschwächt, aber vor Gegenmagie geschützt."}
+/* ===== FLUSS-RUNEN ===== */
+const FLUSS = {
+  Sowilo:{
+    dur:"Bis zum nächsten Long Rest",
+    price:"Kein zusätzlicher Preis."
+  },
+  Jera:{
+    dur:"24 Stunden (verzögert wirksam)",
+    price:"Der Effekt kann nicht vorzeitig beendet werden."
+  },
+  Isa:{
+    dur:"1 Encounter",
+    price:"Deine Bewegung ist halbiert oder deine Bonusaktion blockiert."
+  },
+  Hagalaz:{
+    dur:"1 Encounter",
+    price:"Du erleidest 1d6 Schaden beim Wirken des Rituals."
+  },
+  Perthro:{
+    dur:"Bis ein passender Trigger eintritt",
+    price:"Tritt kein Trigger ein, verursacht die Magie eine kleine Fehlwirkung."
+  },
+  Nauthiz:{
+    dur:"Bis zum nächsten Long Rest",
+    price:"Du erleidest 1 Stufe Erschöpfung."
+  },
+  Eihwaz:{
+    dur:"Bis eine klare Schwelle erreicht ist",
+    price:"Nach Auslösung hast du Nachteil auf deinen nächsten Wurf."
+  },
+  Algiz:{
+    dur:"Bis zum nächsten Long Rest",
+    price:"Der Effekt ist leicht abgeschwächt, aber vor Gegenmagie geschützt."
+  }
 };
 
-let pick={};
+let pick = { anker:null, eid:null, fluss:null };
 
-/* ===== INFINITE WHEEL ===== */
+/* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
 function buildWheel(id, keys, storeKey){
-  const el=document.getElementById(id);
-  const repeat=3, runes=[];
-  el.appendChild(Object.assign(document.createElement("div"),{className:"spacer"}));
+  const el = document.getElementById(id);
+  const repeat = 5;         // 5 Blöcke hintereinander
+  const centerIndex = 2;    // mittlerer Block (0–4)
+  const runes = [];
+
+  // oberer Spacer
+  const top = document.createElement("div");
+  top.className = "spacer";
+  el.appendChild(top);
+
+  // mehrfach Runen einfügen
   for(let i=0;i<repeat;i++){
     keys.forEach(name=>{
-      const d=document.createElement("div");
-      d.className="rune"; d.dataset.value=name;
-      d.innerHTML=`<div class="symbol">${RUNES[name]}</div><div class="name">${name}</div>`;
-      el.appendChild(d); runes.push(d);
+      const d = document.createElement("div");
+      d.className = "rune";
+      d.dataset.value = name;
+      d.innerHTML = `
+        <div class="symbol">${RUNES[name]}</div>
+        <div class="name">${name}</div>
+      `;
+      el.appendChild(d);
+      runes.push(d);
     });
   }
-  el.appendChild(Object.assign(document.createElement("div"),{className:"spacer"}));
-  requestAnimationFrame(()=>{ const block=runes[0].offsetHeight*keys.length; el.scrollTop=block; });
-  el.addEventListener("scroll",()=>{
-    const block=runes[0].offsetHeight*keys.length;
-    if(el.scrollTop<block*0.5) el.scrollTop+=block;
-    if(el.scrollTop>block*1.5) el.scrollTop-=block;
-    const rect=el.getBoundingClientRect();
-    let best=null, bestDist=1e9;
-    runes.forEach(n=>{
-      const r=n.getBoundingClientRect();
-      const d=Math.abs((r.top+r.height/2)-(rect.top+rect.height/2));
-      if(d<bestDist){best=n;bestDist=d;}
+
+  // unterer Spacer
+  const bottom = document.createElement("div");
+  bottom.className = "spacer";
+  el.appendChild(bottom);
+
+  // Start: mittlerer Block
+  requestAnimationFrame(()=>{
+    if(!runes.length) return;
+    const runeHeight = runes[0].offsetHeight || 1;
+    const block = runeHeight * keys.length;
+    el.scrollTop = block * centerIndex;
+
+    // Initial aktive Rune bestimmen
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+      if(d < bestDist){ bestDist = d; best = node; }
     });
-    runes.forEach(n=>n.classList.remove("active"));
-    if(best){ best.classList.add("active"); pick[storeKey]=best.dataset.value; }
+    if(best){
+      runes.forEach(n=>n.classList.remove("active"));
+      best.classList.add("active");
+      pick[storeKey] = best.dataset.value;
+    }
+  });
+
+  // Scroll-Logik
+  el.addEventListener("scroll",()=>{
+    if(!runes.length) return;
+    const runeHeight = runes[0].offsetHeight || 1;
+    const block = runeHeight * keys.length;
+
+    // erst springen wenn man den mittleren Bereich wirklich verlässt:
+    // nach ca. 2 Blöcken nach oben/unten
+    const lowerThreshold = block * (centerIndex - 1.5); // 0.5 Block
+    const upperThreshold = block * (centerIndex + 1.5); // 3.5 Block
+
+    if(el.scrollTop < lowerThreshold){
+      el.scrollTop += block * 2;
+    } else if(el.scrollTop > upperThreshold){
+      el.scrollTop -= block * 2;
+    }
+
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+      if(d < bestDist){
+        bestDist = d;
+        best = node;
+      }
+    });
+
+    if(best){
+      runes.forEach(n=>n.classList.remove("active"));
+      best.classList.add("active");
+      pick[storeKey] = best.dataset.value;
+    }
   });
 }
 
-buildWheel("anker",Object.keys(OMEN),"anker");
-buildWheel("eid",Object.keys(EFFECTS.Fehu),"eid");
-buildWheel("fluss",Object.keys(FLUSS),"fluss");
+/* ===== RÄDER AUFBAUEN ===== */
+buildWheel("anker", Object.keys(OMEN), "anker");
+buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
-/* ===== RITUAL ===== */
-document.getElementById("cast").onclick=()=>{
-  if(!pick.anker||!pick.eid||!pick.fluss) return;
-  const r=document.getElementById("result");
-  r.innerHTML=`
-<b>🕯️ OMEN</b><br><i>${OMEN[pick.anker]}</i>
-<hr>
-<b>⚔️ EFFEKT</b><br>${EFFECTS[pick.anker][pick.eid]}<br>
-<b>Dauer:</b> ${FLUSS[pick.fluss].dur}
-<hr>
-<b>⚠️ PREIS</b><br>${FLUSS[pick.fluss].price}
-<hr>
-<span class="small">1× pro Long Rest · Effekte stapeln nicht</span>`;
-  r.classList.add("show");
+/* ===== RITUAL WIRKEN ===== */
+document.getElementById("cast").onclick = () => {
+  if(!pick.anker || !pick.eid || !pick.fluss) return;
+
+  const omen  = OMEN[pick.anker];
+  const effect = EFFECTS[pick.anker][pick.eid];
+  const flow  = FLUSS[pick.fluss];
+
+  const res = document.getElementById("result");
+  res.innerHTML = `
+    <b>🕯️ OMEN</b><br><i>${omen}</i>
+    <hr>
+    <b>⚔️ EFFEKT</b><br>
+    ${effect}<br>
+    <b>Dauer:</b> ${flow.dur}
+    <hr>
+    <b>⚠️ PREIS</b><br>
+    ${flow.price}
+    <hr>
+    <span class="small">
+      Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+    </span>
+  `;
+  res.classList.add("show");
 };
 </script>
 </body>
