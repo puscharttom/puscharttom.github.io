@@ -180,6 +180,7 @@ hr{
 /* Räder treten zurück */
 body.manifest .wheel{
   filter:grayscale(.6) brightness(.75);
+  pointer-events:none; /* <-- NEU: nach Ritual locked */
 }
 
 /* Ergebnis erscheint „beschworen“ */
@@ -609,7 +610,7 @@ function buildTrackingUI(anker, eid){
       controls = `
         <label>
           <span>Ladungen verbleibend:</span>
-          <input type="number" id="effect-charges" min="0" step="1">
+          <input type="number" id="effect-charges" min="0" step="1" value="1">
         </label>
         <small>Nutze dieses Feld, um verbrauchte Ladungen mitzuzählen.</small>
       `;
