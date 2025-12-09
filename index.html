@@ -2,20 +2,27 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Runenritual</title>
+<title>Runenritual der Hexen</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
   margin:0;
-  background:radial-gradient(circle at center,#160f23 0%,#050308 70%);
+  padding:1.2rem;
+  background:radial-gradient(circle at center,#160f23 0%,#050308 75%);
   color:#eee;
   font-family:Georgia,serif;
-  padding:1.2rem;
 }
-h1{text-align:center;letter-spacing:.2em;margin-bottom:.2rem}
-.sub{text-align:center;opacity:.75;font-size:.85rem;margin-bottom:1.5rem}
-
+h1{
+  text-align:center;
+  letter-spacing:.2em;
+  margin-bottom:.2rem;
+}
+.sub{
+  text-align:center;
+  opacity:.7;
+  font-size:.85rem;
+  margin-bottom:1.4rem;
+}
 .section{
   margin-bottom:1.6rem;
   padding:1rem;
@@ -29,62 +36,42 @@ h1{text-align:center;letter-spacing:.2em;margin-bottom:.2rem}
   letter-spacing:.12em;
   margin-bottom:1rem;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:.6rem;
 }
-
-button.rune{
+button{
   background:#12091c;
   border:1px solid #44335a;
-  border-radius:.8rem;
+  border-radius:.9rem;
   color:#eee;
-  padding:.55rem .25rem;
+  padding:.6rem .3rem;
   font-size:.72rem;
-  text-align:center;
 }
-button.rune svg{
-  width:26px;height:26px;
-  display:block;
-  margin:0 auto .25rem;
-  stroke:#d8ccff;
-  stroke-width:2.5;
-  fill:none;
-}
-button.rune.active{
+button.active{
   border-color:#fff;
   box-shadow:0 0 14px rgba(200,180,255,.7);
   background:#1f1230;
 }
-
 #cast{
   width:100%;
-  margin-top:1rem;
-  padding:.95rem;
+  margin-top:.5rem;
+  padding:.9rem;
   font-size:1rem;
   background:#2b1c44;
   border:1px solid #6c55a3;
-  color:#fff;
-  border-radius:1rem;
 }
-
 #result{
   margin-top:1.6rem;
   padding:1.3rem;
-  background:#0b0713;
   border:2px solid #5a3d88;
-  border-radius:1.1rem;
+  border-radius:1rem;
+  background:#0b0713;
   box-shadow:0 0 28px rgba(120,80,200,.55);
-  line-height:1.65;
+  line-height:1.6;
 }
-
-hr{
-  border:none;
-  border-top:1px solid #34234f;
-  margin:.9rem 0;
-}
+hr{border:none;border-top:1px solid #34234f;margin:.9rem 0}
 .small{opacity:.7;font-size:.75rem}
 </style>
 </head>
@@ -92,89 +79,60 @@ hr{
 <body>
 
 <h1>RUNENRITUAL</h1>
-<div class="sub">Canting-Magie • Alle Zeichen fordern ihren Preis</div>
+<div class="sub">Hexenmagie • 1× pro Long Rest</div>
 
 <div class="section"><h2>ANKER</h2><div class="grid" id="anker"></div></div>
 <div class="section"><h2>FLUSS</h2><div class="grid" id="fluss"></div></div>
 <div class="section"><h2>EID</h2><div class="grid" id="eid"></div></div>
 
 <button id="cast">🔮 Ritual wirken</button>
-
-<div id="result"><span class="small">Wähle je eine Rune aus allen drei Bereichen.</span></div>
+<div id="result"><span class="small">Wähle je eine Rune aus jedem Kreis.</span></div>
 
 <script>
-/* ================= ICON ================= */
-const icon = `<svg viewBox="0 0 40 40"><path d="M20 5v30"/></svg>`;
-
-/* ================= ANKER ================= */
-const anker={
- Fehu:{t:"Besitz & Wert",verbs:["bindet","entzieht","verändert"],flavor:"Reichtum hört den Ruf der Magie."},
- Uruz:{t:"Körper & Kraft",verbs:["stärkt","erschöpft","verformt"],flavor:"Fleisch gehorcht zögernd."},
- Thurisaz:{t:"Konflikt & Widerstand",verbs:["provoziert","zerschlägt","verschärft"],flavor:"Etwas wehrt sich."},
- Ansuz:{t:"Worte & Wissen",verbs:["enthüllt","verfälscht","versiegelt"],flavor:"Stimmen gewinnen Macht."},
- Raidho:{t:"Weg & Reise",verbs:["lenkt","beschleunigt","blockiert"],flavor:"Bewegung wird Schicksal."},
- Kenaz:{t:"Erkenntnis",verbs:["offenbart","erzwingt","verbrennt"],flavor:"Licht frisst Schatten."},
- Gebo:{t:"Bindung & Austausch",verbs:["schmiedet","belastet","opfert"],flavor:"Geben fordert Nehmen."},
- Wunjo:{t:"Emotion & Harmonie",verbs:["verstärkt","verzerrt","zerbricht"],flavor:"Gefühle tragen Macht."}
+/* ================= ANKER – WAS ================= */
+const ANKER={
+ Fehu:{omen:"Dein Schicksal zeigt dir Fehu – Besitz, der fließt.",stat:"Gold, Ressourcen oder Ausrüstung"},
+ Uruz:{omen:"Uruz steht vor dir. Dein Körper trägt heute mehr als er sollte.",stat:"Strength- oder Constitution-Würfe"},
+ Thurisaz:{omen:"Thurisaz tritt in deinen Weg. Macht kommt nur durch Widerstand.",stat:"Schadenswürfe"},
+ Ansuz:{omen:"Ansuz flüstert. Worte erhalten Gewicht.",stat:"Spell Attacks oder Concentration"},
+ Raidho:{omen:"Raidho weist dir einen Pfad.",stat:"Bewegung oder Initiative"},
+ Kenaz:{omen:"Kenaz brennt. Verborgenes kann sich nicht länger verstecken.",stat:"Perception oder Investigation"},
+ Gebo:{omen:"Gebo fordert Austausch. Nichts wird umsonst sein.",stat:"Charisma-Checks"},
+ Wunjo:{omen:"Wunjo bringt fragile Harmonie.",stat:"Saving Throws"}
 };
 
-/* ================= FLUSS ================= */
-const fluss={
- Hagalaz:{
-  style:"chaotisch & zerstörerisch",
-  prices:["Zerstörung naher Objekte","Kollateralschaden","Unkontrollierter Effekt"]
- },
- Nauthiz:{
-  style:"unter Zwang & Mangel",
-  prices:["Erschöpfung","Blutpreis","Verlust eines Werts"]
- },
- Isa:{
-  style:"erstarrend & verzögernd",
-  prices:["Zeitverlust","Gefühlsleere","Kälteschock"]
- },
- Jera:{
-  style:"langsam & unausweichlich",
-  prices:["Langfristige Verpflichtung","Späterer Preis","Aufschub"]
- },
- Eihwaz:{
-  style:"schwellenbehütend",
-  prices:["Temporäre Lähmung","Bindung an Ort","Seelische Narben"]
- },
- Perthro:{
-  style:"schicksalshaft",
-  prices:["SL entscheidet geheim","Unerwartete Wendung","Verborgener Makel"]
- },
- Algiz:{
-  style:"bewahrend",
-  prices:["Begrenzte Wirkung","Auffällige Schutzzeichen","Abhängigkeit"]
- },
- Sowilo:{
-  style:"klar & sichtbar",
-  prices:["Öffentliche Aufmerksamkeit","Neid","Konsequenzen"]
- }
+/* ================= EID – WIE ================= */
+const EID={
+ Berkano:{buff:"+1d6 temporäre HP",desc:"Heilung oder Regeneration"},
+ Tiwaz:{buff:"+1d4 auf einen Angriff oder Schadenswurf pro Runde",desc:"Offensiver Vorteil"},
+ Algiz:{buff:"+1d4 auf einen Rettungswurf pro Runde",desc:"Defensiver Schutz"},
+ Dagaz:{buff:"Advantage auf einen entscheidenden Wurf",desc:"Wendepunkt"},
+ Ingwaz:{buff:"Ein gespeicherter Bonus (+1d6)",desc:"Aufladbarer Effekt"},
+ Laguz:{buff:"Reaktion: +1d4 auf misslungenen Wurf",desc:"Reaktiver Eingriff"},
+ Mannaz:{buff:"+1d4 auf Skill-Checks",desc:"Geistige Klarheit"},
+ Othala:{buff:"Bindung an Objekt oder Ort",desc:"Besitz sichern"}
 };
 
-/* ================= EID ================= */
-const eid={
- Tiwaz:"einen Vorteil im Konflikt zu erzwingen",
- Berkano:"Heilung oder Wachstum hervorzubringen",
- Ehwaz:"Bewegung oder Zusammenarbeit zu stärken",
- Mannaz:"Erkenntnis über sich oder andere zu erzwingen",
- Laguz:"Intuition und Wahrnehmung zu öffnen",
- Ingwaz:"Macht für später zu binden",
- Dagaz:"einen unumkehrbaren Wendepunkt einzuleiten",
- Othala:"Besitz, Blut oder Erbe zu binden"
+/* ================= FLUSS – PREIS ================= */
+const FLUSS={
+ Sowilo:{dur:"bis Long Rest",price:"Du bist deutlich magisch erkennbar."},
+ Jera:{dur:"mehrere Tage",price:"Der Effekt tritt verzögert ein."},
+ Isa:{dur:"1 Encounter",price:"Bewegung halbiert."},
+ Hagalaz:{dur:"1 Encounter",price:"Du erleidest 1d6 Schaden beim Wirken."},
+ Perthro:{dur:"SL-Entscheid",price:"Ein unerwarteter Nebeneffekt tritt ein."},
+ Nauthiz:{dur:"1 Tag",price:"1 Stufe Erschöpfung."},
+ Eihwaz:{dur:"bis Übergang vollzogen",price:"Du bist an Ort/Person gebunden."},
+ Algiz:{dur:"bis Long Rest",price:"Effekt abgeschwächt, aber sicher."}
 };
 
 let pick={};
 
-/* ================= RENDER ================= */
-function draw(target,data,key){
- const el=document.getElementById(target);
+/* ================= UI ================= */
+function draw(id,data,key){
+ const el=document.getElementById(id);
  Object.keys(data).forEach(r=>{
   const b=document.createElement("button");
-  b.className="rune";
-  b.innerHTML=icon+r;
+  b.textContent=r;
   b.onclick=()=>{
     pick[key]=r;
     [...el.children].forEach(x=>x.classList.remove("active"));
@@ -183,31 +141,38 @@ function draw(target,data,key){
   el.appendChild(b);
  });
 }
-
-draw("anker",anker,"anker");
-draw("fluss",fluss,"fluss");
-draw("eid",eid,"eid");
+draw("anker",ANKER,"anker");
+draw("eid",EID,"eid");
+draw("fluss",FLUSS,"fluss");
 
 /* ================= CAST ================= */
 document.getElementById("cast").onclick=()=>{
- if(!pick.anker||!pick.fluss||!pick.eid){
+ if(!pick.anker||!pick.eid||!pick.fluss){
   result.innerHTML="<span class='small'>Alle drei Runen müssen gewählt sein.</span>";
   return;
  }
- const A=anker[pick.anker];
- const F=fluss[pick.fluss];
- const E=eid[pick.eid];
 
- const verb=A.verbs[Math.floor(Math.random()*A.verbs.length)];
- const price=F.prices[Math.floor(Math.random()*F.prices.length)];
+ const A=ANKER[pick.anker];
+ const E=EID[pick.eid];
+ const F=FLUSS[pick.fluss];
 
  result.innerHTML=`
-<b>RITUALWIRKUNG</b><hr>
-Das Ritual <b>${verb}</b> <b>${A.t}</b> und wirkt <b>${F.style}</b>, um
-<b>${E}</b>.<br><i>${A.flavor}</i>
+<b>🕯️ OMEN</b><br>
+<i>${A.omen}</i>
 <hr>
-<b>Preis / Nebenwirkung:</b> ${price}<br>
-<span class="small">Die Auslegung und Langzeitfolgen liegen bei der Spielleitung.</span>
+<b>⚔️ BUFF</b><br>
+<b>${E.desc}</b><br>
+Effekt: ${E.buff}<br>
+Betroffener Bereich: ${A.stat}<br>
+Dauer: ${F.dur}
+<hr>
+<b>⚠️ PREIS / NEBENWIRKUNG</b><br>
+${F.price}
+<hr>
+<span class="small">
+Einmal pro Long Rest.  
+Die Spielleitung entscheidet Details & Wechselwirkungen.
+</span>
 `;
 };
 </script>
