@@ -8,251 +8,175 @@
 <style>
 body{
   margin:0;
-  background:radial-gradient(circle at center,#1a1024 0%,#050308 70%);
+  background:radial-gradient(circle at center,#160f23 0%,#050308 70%);
   color:#eee;
   font-family:Georgia,serif;
   padding:1.2rem;
 }
-
-h1{
-  text-align:center;
-  letter-spacing:0.18em;
-  margin-bottom:0.2rem;
-}
-.sub{
-  text-align:center;
-  opacity:0.75;
-  font-size:0.85rem;
-  margin-bottom:1.3rem;
-}
+h1{text-align:center;letter-spacing:.2em;margin-bottom:.2rem}
+.sub{text-align:center;opacity:.75;font-size:.85rem;margin-bottom:1.5rem}
 
 .section{
-  margin-bottom:1.4rem;
+  margin-bottom:1.6rem;
   padding:1rem;
   border:1px solid #3a2a4a;
-  border-radius:0.9rem;
-  background:rgba(15,8,25,0.75);
+  border-radius:1rem;
+  background:rgba(15,8,25,.75);
 }
 .section h2{
   text-align:center;
   font-size:1rem;
-  letter-spacing:0.12em;
-  margin-bottom:0.8rem;
+  letter-spacing:.12em;
+  margin-bottom:1rem;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:0.6rem;
+  gap:.6rem;
 }
 
 button.rune{
   background:#12091c;
   border:1px solid #44335a;
-  border-radius:0.7rem;
+  border-radius:.8rem;
   color:#eee;
-  padding:0.5rem 0.2rem;
-  font-size:0.7rem;
+  padding:.55rem .25rem;
+  font-size:.72rem;
   text-align:center;
 }
 button.rune svg{
-  width:28px;
-  height:28px;
+  width:26px;height:26px;
   display:block;
-  margin:0 auto 0.2rem;
+  margin:0 auto .25rem;
   stroke:#d8ccff;
   stroke-width:2.5;
   fill:none;
 }
 button.rune.active{
   border-color:#fff;
-  box-shadow:0 0 14px rgba(200,180,255,0.7);
+  box-shadow:0 0 14px rgba(200,180,255,.7);
   background:#1f1230;
 }
 
 #cast{
   width:100%;
   margin-top:1rem;
-  padding:0.9rem;
+  padding:.95rem;
   font-size:1rem;
   background:#2b1c44;
   border:1px solid #6c55a3;
   color:#fff;
-  border-radius:0.9rem;
+  border-radius:1rem;
 }
 
 #result{
-  margin-top:1.4rem;
-  padding:1.2rem;
+  margin-top:1.6rem;
+  padding:1.3rem;
   background:#0b0713;
   border:2px solid #5a3d88;
   border-radius:1.1rem;
-  box-shadow:0 0 25px rgba(120,80,200,.55);
-  line-height:1.6;
+  box-shadow:0 0 28px rgba(120,80,200,.55);
+  line-height:1.65;
 }
 
 hr{
   border:none;
   border-top:1px solid #34234f;
-  margin:0.8rem 0;
+  margin:.9rem 0;
 }
-.small{
-  opacity:0.75;
-  font-size:0.75rem;
-}
+.small{opacity:.7;font-size:.75rem}
 </style>
 </head>
 
 <body>
 
 <h1>RUNENRITUAL</h1>
-<div class="sub">Canting-Magie • Zeichen fordern ihren Preis</div>
+<div class="sub">Canting-Magie • Alle Zeichen fordern ihren Preis</div>
 
-<div class="section">
-<h2>ANKER</h2>
-<div class="grid" id="anker"></div>
-</div>
-
-<div class="section">
-<h2>FLUSS</h2>
-<div class="grid" id="fluss"></div>
-</div>
-
-<div class="section">
-<h2>EID</h2>
-<div class="grid" id="eid"></div>
-</div>
+<div class="section"><h2>ANKER</h2><div class="grid" id="anker"></div></div>
+<div class="section"><h2>FLUSS</h2><div class="grid" id="fluss"></div></div>
+<div class="section"><h2>EID</h2><div class="grid" id="eid"></div></div>
 
 <button id="cast">🔮 Ritual wirken</button>
 
-<div id="result">
-<span class="small">Wähle je eine Rune aus allen drei Bereichen.</span>
-</div>
+<div id="result"><span class="small">Wähle je eine Rune aus allen drei Bereichen.</span></div>
 
 <script>
-/* ================= ICONS ================= */
-const icons={
- Fehu:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 10l15-5M20 18l15-5"/></svg>`,
- Uruz:`<svg viewBox="0 0 40 40"><path d="M10 35L20 5l10 30"/></svg>`,
- Thurisaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l10 6-10 6"/></svg>`,
- Ansuz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l12 8"/></svg>`,
- Raidho:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 20h16L12 5"/></svg>`,
- Kenaz:`<svg viewBox="0 0 40 40"><path d="M28 5L12 20l16 15"/></svg>`,
- Gebo:`<svg viewBox="0 0 40 40"><path d="M10 10l20 20M30 10L10 30"/></svg>`,
- Wunjo:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 15l12 8"/></svg>`,
+/* ================= ICON ================= */
+const icon = `<svg viewBox="0 0 40 40"><path d="M20 5v30"/></svg>`;
 
- Hagalaz:`<svg viewBox="0 0 40 40"><path d="M10 5v30M30 5v30M10 20h20"/></svg>`,
- Nauthiz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M10 25l20-10"/></svg>`,
- Isa:`<svg viewBox="0 0 40 40"><path d="M20 5v30"/></svg>`,
- Jera:`<svg viewBox="0 0 40 40"><path d="M10 30l10-10-10-10M30 10l-10 10 10 10"/></svg>`,
- Eihwaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l-8 8 8 8"/></svg>`,
- Perthro:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 5l16 10-16 10"/></svg>`,
- Algiz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M20 12l-8 8M20 12l8 8"/></svg>`,
- Sowilo:`<svg viewBox="0 0 40 40"><path d="M10 8l20 12-20 12"/></svg>`,
-
- Tiwaz:`<svg viewBox="0 0 40 40"><path d="M20 5v30M14 11l6-6 6 6"/></svg>`,
- Berkano:`<svg viewBox="0 0 40 40"><path d="M12 5v30M12 5c10 5 10 10 0 15M12 20c10 5 10 10 0 15"/></svg>`,
- Ehwaz:`<svg viewBox="0 0 40 40"><path d="M10 5v30M30 5v30M10 12l20 16"/></svg>`,
- Mannaz:`<svg viewBox="0 0 40 40"><path d="M12 35V5l16 30V5"/></svg>`,
- Laguz:`<svg viewBox="0 0 40 40"><path d="M20 5v30l10-10"/></svg>`,
- Ingwaz:`<svg viewBox="0 0 40 40"><path d="M10 20l10-10 10 10-10 10z"/></svg>`,
- Dagaz:`<svg viewBox="0 0 40 40"><path d="M10 20l10-10 10 10-10 10z"/></svg>`,
- Othala:`<svg viewBox="0 0 40 40"><path d="M20 5l10 10-10 20-10-20z"/></svg>`
-};
-
-/* ================= DATA ================= */
+/* ================= ANKER ================= */
 const anker={
- Fehu:{
-  text:"Die Rune klammert sich an Besitz und Wert.",
-  flavor:"Reichtum fühlt den Ruf der Magie.",
- },
- Uruz:{
-  text:"Die Magie greift nach Fleisch und Kraft.",
-  flavor:"Muskeln spannen sich schmerzhaft an.",
- },
- Thurisaz:{
-  text:"Das Zeichen ruft Konflikt und Widerstand.",
-  flavor:"Etwas stellt sich dir in den Weg.",
- },
- Ansuz:{
-  text:"Die Rune flüstert mit Stimmen und Zeichen.",
-  flavor:"Worte gewinnen Macht.",
- },
- Raidho:{
-  text:"Die Magie bindet sich an einen Weg.",
-  flavor:"Bewegung wird Schicksal.",
- },
- Kenaz:{
-  text:"Erkenntnis brennt sich ins Bewusstsein.",
-  flavor:"Verborgenes wird sichtbar.",
- },
- Gebo:{
-  text:"Die Kraft entsteht aus einer Bindung.",
-  flavor:"Ein Geben fordert ein Nehmen.",
- },
- Wunjo:{
-  text:"Emotionen werden zum Träger der Magie.",
-  flavor:"Freude oder Verzweiflung tragen den Zauber.",
- }
+ Fehu:{t:"Besitz & Wert",verbs:["bindet","entzieht","verändert"],flavor:"Reichtum hört den Ruf der Magie."},
+ Uruz:{t:"Körper & Kraft",verbs:["stärkt","erschöpft","verformt"],flavor:"Fleisch gehorcht zögernd."},
+ Thurisaz:{t:"Konflikt & Widerstand",verbs:["provoziert","zerschlägt","verschärft"],flavor:"Etwas wehrt sich."},
+ Ansuz:{t:"Worte & Wissen",verbs:["enthüllt","verfälscht","versiegelt"],flavor:"Stimmen gewinnen Macht."},
+ Raidho:{t:"Weg & Reise",verbs:["lenkt","beschleunigt","blockiert"],flavor:"Bewegung wird Schicksal."},
+ Kenaz:{t:"Erkenntnis",verbs:["offenbart","erzwingt","verbrennt"],flavor:"Licht frisst Schatten."},
+ Gebo:{t:"Bindung & Austausch",verbs:["schmiedet","belastet","opfert"],flavor:"Geben fordert Nehmen."},
+ Wunjo:{t:"Emotion & Harmonie",verbs:["verstärkt","verzerrt","zerbricht"],flavor:"Gefühle tragen Macht."}
 };
 
+/* ================= FLUSS ================= */
 const fluss={
  Hagalaz:{
-  text:"Die Magie wirkt unkontrolliert.",
-  price:["zerstörte Ausrüstung","körperliche Verletzung","verbrannte Umgebung"]
+  style:"chaotisch & zerstörerisch",
+  prices:["Zerstörung naher Objekte","Kollateralschaden","Unkontrollierter Effekt"]
  },
  Nauthiz:{
-  text:"Die Kraft fordert Mangel und Opfer.",
-  price:["Erschöpfung","Blut als Opfer","Verlust eines Werts"]
+  style:"unter Zwang & Mangel",
+  prices:["Erschöpfung","Blutpreis","Verlust eines Werts"]
  },
  Isa:{
-  text:"Die Magie erstarrt und verzögert.",
-  price:["Zeitverlust","Kälteschock","emotionale Leere"]
+  style:"erstarrend & verzögernd",
+  prices:["Zeitverlust","Gefühlsleere","Kälteschock"]
  },
  Jera:{
-  text:"Die Wirkung reift mit der Zeit.",
-  price:["Geduld","anhaltende Verpflichtung"]
+  style:"langsam & unausweichlich",
+  prices:["Langfristige Verpflichtung","Späterer Preis","Aufschub"]
  },
  Eihwaz:{
-  text:"Die Magie schützt einen Übergang.",
-  price:["vorübergehende Lähmung","Bindung an Ort"]
+  style:"schwellenbehütend",
+  prices:["Temporäre Lähmung","Bindung an Ort","Seelische Narben"]
  },
  Perthro:{
-  text:"Der Ausgang liegt im Zufall.",
-  price:["SL bestimmt geheim","unerwartete Konsequenz"]
+  style:"schicksalshaft",
+  prices:["SL entscheidet geheim","Unerwartete Wendung","Verborgener Makel"]
  },
  Algiz:{
-  text:"Schutz dominiert die Wirkung.",
-  price:["begrenzter Effekt","auffällige Runen"]
+  style:"bewahrend",
+  prices:["Begrenzte Wirkung","Auffällige Schutzzeichen","Abhängigkeit"]
  },
  Sowilo:{
-  text:"Die Kraft ist klar und offen.",
-  price:["Sichtbarkeit","neidische Aufmerksamkeit"]
+  style:"klar & sichtbar",
+  prices:["Öffentliche Aufmerksamkeit","Neid","Konsequenzen"]
  }
 };
 
+/* ================= EID ================= */
 const eid={
- Tiwaz:"einen entscheidenden Vorteil im Konflikt zu erzwingen",
+ Tiwaz:"einen Vorteil im Konflikt zu erzwingen",
  Berkano:"Heilung oder Wachstum hervorzubringen",
- Ehwaz:"Zusammenarbeit oder Bewegung zu stärken",
- Mannaz:"Erkenntnis und Selbsterkenntnis zu erzwingen",
+ Ehwaz:"Bewegung oder Zusammenarbeit zu stärken",
+ Mannaz:"Erkenntnis über sich oder andere zu erzwingen",
  Laguz:"Intuition und Wahrnehmung zu öffnen",
- Ingwaz:"Macht für später zu speichern",
+ Ingwaz:"Macht für später zu binden",
  Dagaz:"einen unumkehrbaren Wendepunkt einzuleiten",
  Othala:"Besitz, Blut oder Erbe zu binden"
 };
 
-let pick={anker:null,fluss:null,eid:null};
+let pick={};
 
 /* ================= RENDER ================= */
 function draw(target,data,key){
  const el=document.getElementById(target);
- Object.keys(data).forEach(name=>{
+ Object.keys(data).forEach(r=>{
   const b=document.createElement("button");
   b.className="rune";
-  b.innerHTML=(icons[name]||"")+name;
+  b.innerHTML=icon+r;
   b.onclick=()=>{
-    pick[key]=name;
+    pick[key]=r;
     [...el.children].forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
   };
@@ -270,18 +194,20 @@ document.getElementById("cast").onclick=()=>{
   result.innerHTML="<span class='small'>Alle drei Runen müssen gewählt sein.</span>";
   return;
  }
+ const A=anker[pick.anker];
+ const F=fluss[pick.fluss];
+ const E=eid[pick.eid];
 
- const prices=fluss[pick.fluss].price;
- const price=prices[Math.floor(Math.random()*prices.length)];
+ const verb=A.verbs[Math.floor(Math.random()*A.verbs.length)];
+ const price=F.prices[Math.floor(Math.random()*F.prices.length)];
 
  result.innerHTML=`
 <b>RITUALWIRKUNG</b><hr>
-<b>Anker:</b> ${anker[pick.anker].text}<br>
-<i>${anker[pick.anker].flavor}</i><br><br>
-<b>Fluss:</b> ${fluss[pick.fluss].text}<br>
-<b>Preis:</b> ${price}<br><br>
-<b>Eid:</b> Das Ritual wird gebunden, um <b>${eid[pick.eid]}</b>.<hr>
-<span class="small">Die Spielleitung entscheidet über genaue Auslegung & Folgen.</span>
+Das Ritual <b>${verb}</b> <b>${A.t}</b> und wirkt <b>${F.style}</b>, um
+<b>${E}</b>.<br><i>${A.flavor}</i>
+<hr>
+<b>Preis / Nebenwirkung:</b> ${price}<br>
+<span class="small">Die Auslegung und Langzeitfolgen liegen bei der Spielleitung.</span>
 `;
 };
 </script>
