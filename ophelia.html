@@ -548,7 +548,7 @@ body.manifest .rune.active {
   let restoring = HAS_SAVED_STATE;
 
   /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
-  function buildWheel(id, keys, storeKey){
+function buildWheel(id, keys, storeKey){
   const el = document.getElementById(id);
   if(!el) return;
 
@@ -556,12 +556,10 @@ body.manifest .rune.active {
   const centerIndex = 6;
   const runes = [];
 
-  /* Abstand oben */
-  const top = document.createElement("div");
-  top.className = "spacer";
-  el.appendChild(top);
+  // Abstand oben
+  el.innerHTML = `<div class="spacer"></div>`;
 
-  /* Runen mehrfach duplizieren */
+  // Runen mehrfach duplizieren
   for(let i = 0; i < repeat; i++){
     keys.forEach(name=>{
       const d = document.createElement("div");
@@ -576,27 +574,66 @@ body.manifest .rune.active {
     });
   }
 
-  /* Abstand unten */
-  const bottom = document.createElement("div");
-  bottom.className = "spacer";
-  el.appendChild(bottom);
+  // Abstand unten
+  el.innerHTML += `<div class="spacer"></div>`;
 
-  /* Nur beim ersten Öffnen mittig positionieren */
-if (HAS_SAVED_STATE) {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      scrollWheelToValue("anker", pick.anker);
-      scrollWheelToValue("eid", pick.eid);
-      scrollWheelToValue("fluss", pick.fluss);
+  /* ===== INITIAL POSITION ONLY IF NO SAVED STATE ===== */
+  if(!HAS_SAVED_STATE){
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
 
-      // ✅ ERST NACHDEM ALLES FERTIG IST wieder aktivieren
-      setTimeout(() => {
-        restoring = false;
-      }, 120);
+        // Höhe des Blocks (eine volle Wiederholung)
+        const runeHeight = runes[0].offsetHeight || 1;
+        const block = runeHeight * keys.length;
+
+        // Mittig starten
+        el.scrollTop = block * centerIndex;
+
+      });
     });
+  }
+
+  /* ===== RESTORE POSITION (AFTER FULL RENDER) ===== */
+  if(HAS_SAVED_STATE){
+    restoring = true;
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        setTimeout(()=>{
+          scrollWheelToValue(id, pick[storeKey]);
+          restoring = false;
+        }, 60);   // etwas Delay verhindert Race-Conditions
+      });
+    });
+  }
+
+  /* ===== LIVE SCROLLING ===== */
+  el.addEventListener("scroll",()=>{
+    if(restoring) return;
+
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs(
+        (r.top + r.height/2) -
+        (rect.top + rect.height/2)
+      );
+      if(d < bestDist){
+        bestDist = d;
+        best = node;
+      }
+    });
+
+    if(best){
+      runes.forEach(n=>n.classList.remove("active"));
+      best.classList.add("active");
+      pick[storeKey] = best.dataset.value;
+    }
   });
 }
-
   /* Scroll Listener (immer aktiv!) */
 el.addEventListener("scroll",()=>{
   if(restoring) return;
