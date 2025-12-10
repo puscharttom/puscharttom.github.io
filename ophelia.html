@@ -787,15 +787,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 50);
 
   document.getElementById("cast").onclick = () => {
-    document.body.classList.add("manifest");
-    if(!pick.anker || !pick.eid || !pick.fluss) return;
+  document.body.classList.add("manifest");
+  if(!pick.anker || !pick.eid || !pick.fluss) return;
 
-    const res = document.getElementById("result");
-    res.innerHTML = `...`;
-    res.classList.add("show");
+  const omen  = OMEN[pick.anker];
+  const effectText = EFFECTS[pick.anker][pick.eid];
+  const flow  = FLUSS[pick.fluss];
+  const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
 
-    saveRitualState();
-  };
+  const res = document.getElementById("result");
+  res.innerHTML = `
+    <b>🕯️ OMEN</b><br><i>${omen}</i>
+    <hr>
+    <b>⚔️ EFFEKT</b><br>
+    ${effectText}<br>
+    <b>Dauer:</b> ${flow.dur}
+    <hr>
+    <b>⚠️ PREIS</b><br>
+    ${flow.price}
+    <hr>
+    ${trackingHtml}
+    <span class="small">
+      Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+    </span>
+  `;
+  res.classList.add("show");
+
+  saveRitualState();
+};
 
   document.getElementById("reset").onclick = () => {
     localStorage.removeItem(STORAGE_KEY);
