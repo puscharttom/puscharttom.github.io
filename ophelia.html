@@ -771,61 +771,77 @@ function scrollWheelToValue(wheelId, value){
     }
   }
 
-  /* ===== INIT NACH DOM-LOAD ===== */
- buildWheel("anker", Object.keys(OMEN), "anker");
-buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
-buildWheel("fluss", Object.keys(FLUSS), "fluss");
+/* ===== INIT NACH DOM-LOAD ===== */
+document.addEventListener("DOMContentLoaded", () => {
 
-loadRitualState();
+  buildWheel("anker", Object.keys(OMEN), "anker");
+  buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+  buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
-setTimeout(() => {
-  scrollWheelToValue("anker", pick.anker);
-  scrollWheelToValue("eid", pick.eid);
-  scrollWheelToValue("fluss", pick.fluss);
-}, 50);
+  loadRitualState();
 
-    document.getElementById("cast").onclick = () => {
-      document.body.classList.add("manifest");
+  setTimeout(() => {
+    scrollWheelToValue("anker", pick.anker);
+    scrollWheelToValue("eid", pick.eid);
+    scrollWheelToValue("fluss", pick.fluss);
+  }, 50);
 
-      if(!pick.anker || !pick.eid || !pick.fluss) return;
+  document.getElementById("cast").onclick = () => {
+    document.body.classList.add("manifest");
 
-      const omen  = OMEN[pick.anker];
-      const effectText = EFFECTS[pick.anker][pick.eid];
-      const flow  = FLUSS[pick.fluss];
+    if(!pick.anker || !pick.eid || !pick.fluss) return;
 
-      const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
+    const omen  = OMEN[pick.anker];
+    const effectText = EFFECTS[pick.anker][pick.eid];
+    const flow  = FLUSS[pick.fluss];
 
-      const res = document.getElementById("result");
-      res.innerHTML = `
-        <b>🕯️ OMEN</b><br><i>${omen}</i>
-        <hr>
-        <b>⚔️ EFFEKT</b><br>
-        ${effectText}<br>
-        <b>Dauer:</b> ${flow.dur}
-        <hr>
-        <b>⚠️ PREIS</b><br>
-        ${flow.price}
-        <hr>
-        ${trackingHtml}
-        <span class="small">
-          Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
-        </span>
-      `;
-      res.classList.add("show");
+    const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
+
+    const res = document.getElementById("result");
+    res.innerHTML = `
+      <b>🕯️ OMEN</b><br><i>${omen}</i>
+      <hr>
+      <b>⚔️ EFFEKT</b><br>
+      ${effectText}<br>
+      <b>Dauer:</b> ${flow.dur}
+      <hr>
+      <b>⚠️ PREIS</b><br>
+      ${flow.price}
+      <hr>
+      ${trackingHtml}
+      <span class="small">
+        Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+      </span>
+    `;
+    res.classList.add("show");
+    saveRitualState();
+  };
+
+  document.getElementById("reset").onclick = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    document.body.classList.remove("manifest");
+    const res = document.getElementById("result");
+    res.classList.remove("show");
+    res.innerHTML = `
+      <span class="small">
+        Ein neuer Tag bricht an. Die Runen schweigen.
+      </span>
+    `;
+  };
+
+  document.addEventListener("change", e=>{
+    if(e.target.closest("#effect-ui")){
       saveRitualState();
-    };
+    }
+  });
+  
+  document.addEventListener("input", e=>{
+    if(e.target.closest("#effect-ui")){
+      saveRitualState();
+    }
+  });
 
-    document.getElementById("reset").onclick = () => {
-      localStorage.removeItem(STORAGE_KEY);
-      document.body.classList.remove("manifest");
-      const res = document.getElementById("result");
-      res.classList.remove("show");
-      res.innerHTML = `
-        <span class="small">
-          Ein neuer Tag bricht an. Die Runen schweigen.
-        </span>
-      `;
-    };
+}); // ← DAS hat komplett gefehlt!
 
     document.addEventListener("change", e=>{
       if(e.target.closest("#effect-ui")){
