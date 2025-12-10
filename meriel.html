@@ -544,17 +544,15 @@ function buildWheel(id, keys, storeKey){
     const runeHeight = runes[0].offsetHeight || 1;
     const block = runeHeight * keys.length;
 
-    const visibleBlocks = repeat;   // total repeated blocks (12)
-    const safeZone = 5;             // how many blocks before the edge it should trigger
-      
-    const lowerThreshold = block * (centerIndex - visibleBlocks + safeZone);
-    const upperThreshold = block * (centerIndex + visibleBlocks - safeZone);
-      
+    // springt erst SEHR spät
+    const lowerThreshold = block * (centerIndex - 5);
+    const upperThreshold = block * (centerIndex + 5);
+    
+    // macht einen großen Sprung (wie vorher)
     if(el.scrollTop < lowerThreshold){
-        el.scrollTop += block * (visibleBlocks * 2);
-    }
-    else if(el.scrollTop > upperThreshold){
-        el.scrollTop -= block * (visibleBlocks * 2);
+      el.scrollTop += block * 10;
+    } else if(el.scrollTop > upperThreshold){
+      el.scrollTop -= block * 10;
     }
 
     const rect = el.getBoundingClientRect();
@@ -569,13 +567,13 @@ function buildWheel(id, keys, storeKey){
       }
     });
 
-    if(best){
-      runes.forEach(n=>n.classList.remove("active"));
-      best.classList.add("active");
-      pick[storeKey] = best.dataset.value;
-    }
-  });
-}
+      if(best){
+        runes.forEach(n=>n.classList.remove("active"));
+        best.classList.add("active");
+        pick[storeKey] = best.dataset.value;
+      }
+    });
+  }
 
 /* ===== RÄDER AUFBAUEN ===== */
 buildWheel("anker", Object.keys(OMEN), "anker");
