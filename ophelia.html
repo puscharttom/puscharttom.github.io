@@ -706,7 +706,23 @@ body.manifest .rune.active {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
+function scrollWheelToValue(wheelId, value){
+  const wheel = document.getElementById(wheelId);
+  if(!wheel || !value) return;
 
+  const runes = [...wheel.querySelectorAll(".rune")];
+  const target = runes.find(r => r.dataset.value === value);
+  if(!target) return;
+
+  const wheelRect = wheel.getBoundingClientRect();
+  const runeRect = target.getBoundingClientRect();
+
+  const offset =
+    (runeRect.top + runeRect.height / 2) -
+    (wheelRect.top + wheelRect.height / 2);
+
+  wheel.scrollTop += offset;
+}
   function loadRitualState(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return;
@@ -756,12 +772,17 @@ body.manifest .rune.active {
   }
 
   /* ===== INIT NACH DOM-LOAD ===== */
-  document.addEventListener("DOMContentLoaded", () => {
-    buildWheel("anker", Object.keys(OMEN), "anker");
-    buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
-    buildWheel("fluss", Object.keys(FLUSS), "fluss");
+ buildWheel("anker", Object.keys(OMEN), "anker");
+buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
-    loadRitualState();
+loadRitualState();
+
+setTimeout(() => {
+  scrollWheelToValue("anker", pick.anker);
+  scrollWheelToValue("eid", pick.eid);
+  scrollWheelToValue("fluss", pick.fluss);
+}, 50);
 
     document.getElementById("cast").onclick = () => {
       document.body.classList.add("manifest");
