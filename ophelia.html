@@ -539,36 +539,33 @@ body.manifest .wheel{
       }
     });
 
-    el.addEventListener("scroll",()=>{
-      if(!runes.length) return;
-      const runeHeight = runes[0].offsetHeight || 1;
-      const block = runeHeight * keys.length;
+  el.addEventListener("scroll",()=>{
+    if(!runes.length) return;
+    const runeHeight = runes[0].offsetHeight || 1;
+    const block = runeHeight * keys.length;
 
-      const visibleBlocks = repeat;   // total repeated blocks (12)
-      const safeZone = 5;             // how many blocks before the edge it should trigger
-      
-      const lowerThreshold = block * (centerIndex - visibleBlocks + safeZone);
-      const upperThreshold = block * (centerIndex + visibleBlocks - safeZone);
-      
-      if(el.scrollTop < lowerThreshold){
-        el.scrollTop += block * (visibleBlocks * 2);
+    // springt erst SEHR spät
+    const lowerThreshold = block * (centerIndex - 5);
+    const upperThreshold = block * (centerIndex + 5);
+    
+    // macht einen großen Sprung (wie vorher)
+    if(el.scrollTop < lowerThreshold){
+      el.scrollTop += block * 10;
+    } else if(el.scrollTop > upperThreshold){
+      el.scrollTop -= block * 10;
+    }
+
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+      if(d < bestDist){
+        bestDist = d;
+        best = node;
       }
-      else if(el.scrollTop > upperThreshold){
-        el.scrollTop -= block * (visibleBlocks * 2);
-      }
-
-
-      const rect = el.getBoundingClientRect();
-      let best = null;
-      let bestDist = Infinity;
-      runes.forEach(node=>{
-        const r = node.getBoundingClientRect();
-        const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
-        if(d < bestDist){
-          bestDist = d;
-          best = node;
-        }
-      });
+    });
 
       if(best){
         runes.forEach(n=>n.classList.remove("active"));
