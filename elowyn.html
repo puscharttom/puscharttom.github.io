@@ -537,13 +537,15 @@ function buildWheel(id, keys, storeKey){
     const runeHeight = runes[0].offsetHeight || 1;
     const block = runeHeight * keys.length;
 
-    const lowerThreshold = block * (centerIndex - 1.5);
-    const upperThreshold = block * (centerIndex + 1.5);
-
+    // springt erst SEHR spät
+    const lowerThreshold = block * (centerIndex - 5);
+    const upperThreshold = block * (centerIndex + 5);
+    
+    // macht einen großen Sprung (wie vorher)
     if(el.scrollTop < lowerThreshold){
-      el.scrollTop += block * 2;
+      el.scrollTop += block * 5;
     } else if(el.scrollTop > upperThreshold){
-      el.scrollTop -= block * 2;
+      el.scrollTop -= block * 5;
     }
 
     const rect = el.getBoundingClientRect();
@@ -558,13 +560,13 @@ function buildWheel(id, keys, storeKey){
       }
     });
 
-    if(best){
-      runes.forEach(n=>n.classList.remove("active"));
-      best.classList.add("active");
-      pick[storeKey] = best.dataset.value;
-    }
-  });
-}
+      if(best){
+        runes.forEach(n=>n.classList.remove("active"));
+        best.classList.add("active");
+        pick[storeKey] = best.dataset.value;
+      }
+    });
+  }
 
 /* ===== RÄDER AUFBAUEN ===== */
 buildWheel("anker", Object.keys(OMEN), "anker");
