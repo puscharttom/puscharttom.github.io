@@ -7,6 +7,7 @@
 
 <style>
 :root{
+  /* OPHELIA – LILA SORCERER MAGIE */
   --accent-main: rgba(190,140,255,.95);
   --accent-soft: rgba(150,90,230,.45);
   --accent-shadow: rgba(210,160,255,.7);
@@ -20,14 +21,16 @@ body{
   font-family:Georgia,serif;
   color:#eee;
 
+  /* CHARAKTER-HINTERGRUND */
   background:
-    linear-gradient(rgba(5,3,8,0.88), rgba(5,3,8,0.88)),
+    linear-gradient(
+      rgba(5,3,8,0.88),
+      rgba(5,3,8,0.88)
+    ),
     var(--char-bg) center / cover fixed no-repeat;
 
   min-height:100vh;
 }
-
-/* --- LAYOUT / UI --- */
 
 .sub{
   text-align:center;
@@ -36,6 +39,7 @@ body{
   margin-bottom:1rem;
 }
 
+/* ===== TITEL ===== */
 .title-image{
   text-align:center;
   font-size:1.4rem;
@@ -47,15 +51,14 @@ body{
     0 0 28px var(--accent-soft);
 }
 
+/* ===== DREHRÄDER ===== */
 .wheels{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:.7rem;
   margin-bottom:1.2rem;
 }
-
 .wheel-column{ display:flex; flex-direction:column; }
-
 .label{
   text-align:center;
   font-size:.7rem;
@@ -73,14 +76,7 @@ body{
   overflow-y:auto;
   scroll-snap-type:y mandatory;
   position:relative;
-
-  touch-action: pan-y;
-  overscroll-behavior-x:none;
-  overflow-x:hidden;
-
-  scrollbar-width:none;
 }
-.wheel::-webkit-scrollbar{ display:none; }
 
 .spacer{ height:80px; }
 
@@ -93,13 +89,13 @@ body{
 }
 .rune .symbol{ font-size:2rem; }
 .rune .name{ font-size:.6rem; opacity:.7; }
-
 .rune.active{
   opacity:1;
   transform:scale(1.15);
   text-shadow:0 0 14px var(--accent-main);
 }
 
+/* ===== ZENTRIER-LINIE ===== */
 .wheel::after{
   content:"";
   position:absolute;
@@ -109,7 +105,10 @@ body{
   height:2px;
   transform:translateY(-50%);
   background:linear-gradient(90deg,transparent,var(--accent-main),transparent);
-  box-shadow:0 0 10px var(--accent-main), 0 0 22px var(--accent-soft);
+  box-shadow:
+    0 0 10px var(--accent-main),
+    0 0 22px var(--accent-soft);
+  pointer-events:none;
 }
 
 .wheel::before{
@@ -126,6 +125,7 @@ body{
     rgba(180,120,255,.08) 35%,
     transparent 70%
   );
+  pointer-events:none;
 }
 
 .back-button{
@@ -141,15 +141,26 @@ body{
   background:rgba(20,15,30,.55);
   backdrop-filter:blur(3px);
   transition:.25s ease;
-  box-shadow:0 0 6px rgba(255,255,255,.08), 0 0 14px rgba(0,0,0,.6);
+  box-shadow:
+    0 0 6px rgba(255,255,255,.08),
+    0 0 14px rgba(0,0,0,.6);
 }
 
 .back-button:hover{
   background:rgba(40,25,70,.65);
-  box-shadow:0 0 10px rgba(255,255,255,.25), 0 0 20px rgba(180,120,255,.25);
+  box-shadow:
+    0 0 10px rgba(255,255,255,.25),
+    0 0 20px rgba(180,120,255,.25);
   transform:translateY(-1px);
 }
 
+.back-button:active{
+  transform:scale(.97);
+  opacity:.85;
+}
+
+
+/* ===== BUTTONS ===== */
 #cast, #reset{
   width:100%;
   padding:.9rem;
@@ -166,6 +177,9 @@ body{
   background:linear-gradient(180deg,#2a2a3c,#14141f);
 }
 
+#cast:active,#reset:active{ transform:scale(.98); }
+
+/* ===== RESULT ===== */
 #result{
   margin-top:1rem;
   padding:1.2rem;
@@ -180,31 +194,21 @@ body{
 }
 #result.show{ opacity:1; transform:none; }
 
+hr{
+  border:none;
+  border-top:1px solid #34234f;
+  margin:.8rem 0;
+}
 .small{ opacity:.7; font-size:.75rem; }
 
+/* ===== LOCK ===== */
 body.manifest .wheel{
+  filter:grayscale(.6) brightness(.75);
   pointer-events:none;
   overflow:hidden;
 }
 
-body.manifest .rune{
-  opacity:.25;
-  filter:grayscale(1) brightness(.5);
-}
-
-body.manifest .rune.active{
-  opacity:1 !important;
-  filter:none !important;
-  transform:scale(1.25);
-  animation:pulseGlow 2.6s ease-in-out infinite;
-}
-
-@keyframes pulseGlow{
-  0% { text-shadow:0 0 14px var(--accent-main),0 0 28px var(--accent-main),0 0 38px var(--accent-shadow); }
-  50%{ text-shadow:0 0 24px var(--accent-main),0 0 40px var(--accent-main),0 0 60px var(--accent-shadow); }
-  100%{ text-shadow:0 0 14px var(--accent-main),0 0 28px var(--accent-main),0 0 38px var(--accent-shadow); }
-}
-
+/* ===== TRACKING ===== */
 #effect-ui{
   margin-top:.6rem;
   padding:.6rem .8rem;
@@ -218,11 +222,8 @@ body.manifest .rune.active{
   gap:.4rem;
   margin-top:.35rem;
 }
-#effect-ui input{
-  background:#07030f;
-  color:#eee;
-  border:1px solid #5a3d88;
-}
+#effect-ui input{ background:#07030f; color:#eee; border:1px solid #5a3d88; }
+  
 </style>
 </head>
 
@@ -236,20 +237,9 @@ body.manifest .rune.active{
 </div>
 
 <div class="wheels">
-  <div class="wheel-column">
-    <div class="label">ANKER</div>
-    <div class="wheel" id="anker"></div>
-  </div>
-
-  <div class="wheel-column">
-    <div class="label">EID</div>
-    <div class="wheel" id="eid"></div>
-  </div>
-
-  <div class="wheel-column">
-    <div class="label">FLUSS</div>
-    <div class="wheel" id="fluss"></div>
-  </div>
+  <div class="wheel-column"><div class="label">ANKER</div><div class="wheel" id="anker"></div></div>
+  <div class="wheel-column"><div class="label">EID</div><div class="wheel" id="eid"></div></div>
+  <div class="wheel-column"><div class="label">FLUSS</div><div class="wheel" id="fluss"></div></div>
 </div>
 
 <button id="cast">🔮 RITUAL WIRKEN</button>
@@ -261,17 +251,11 @@ body.manifest .rune.active{
 
 <script>
 (() => {
-
-  /* -----------------------------------------------------------
-     KONSTANTEN & DATEN
-  ----------------------------------------------------------- */
-
   const CHARACTER_ID = "ophelia";
   const STORAGE_KEY = "runenritual_" + CHARACTER_ID + "_v1";
 
-  const HAS_SAVED_STATE = !!localStorage.getItem(STORAGE_KEY);
-
-  const RUNES = {  
+  /* ===== RUNENZEICHEN ===== */
+  const RUNES = {
     Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
     Raidho:"ᚱ", Kenaz:"ᚲ", Gebo:"ᚷ", Wunjo:"ᚹ",
     Berkano:"ᛒ", Tiwaz:"ᛏ", Algiz:"ᛉ", Dagaz:"ᛞ",
@@ -280,6 +264,7 @@ body.manifest .rune.active{
     Perthro:"ᛈ", Nauthiz:"ᚾ", Eihwaz:"ᛇ"
   };
 
+  /* ===== OMEN PRO ANKER ===== */
   const OMEN = {
     Fehu:"Fehu tritt hervor – Besitz verlangt Führung.",
     Uruz:"Uruz zeigt sich – dein Körper trägt heute mehr.",
@@ -291,6 +276,7 @@ body.manifest .rune.active{
     Wunjo:"Wunjo lächelt vorsichtig – der Geist sucht Balance."
   };
 
+  /* ===== 64 EFFEKTE (ANKER × EID) ===== */
   const EFFECTS = {
     Fehu:{
       Berkano:"Erhalte 1d4 zusätzliche Ladungen für ein begrenztes Item.",
@@ -316,7 +302,7 @@ body.manifest .rune.active{
       Berkano:"Dein erster Treffer verursacht +1d6 zusätzlichen Schaden.",
       Tiwaz:"+1 auf Attack Rolls (1× pro Runde).",
       Algiz:"Ignoriere einmal Shield oder ähnliche parierende Effekte.",
-      Dagaz:"Ein Angriff trifft automatisch.",
+      Dagaz:"Ein Angriff trifft automatisch (kein erzwungener Krit).",
       Ingwaz:"Speichere +1d10 zusätzlichen Schaden.",
       Laguz:"Nach einem verfehlten Angriff darfst du den Wurf wiederholen.",
       Mannaz:"Advantage auf Angriffe gegen ein ausgewähltes Ziel.",
@@ -327,94 +313,188 @@ body.manifest .rune.active{
       Tiwaz:"+1 auf Spell Attack oder Spell Save DC (für 1 Zauber).",
       Algiz:"Advantage auf Concentration Saves.",
       Dagaz:"Ein Zauber ignoriert Disadvantage.",
-      Ingwaz:"Speichere einen +1-Zaubergrad-Effekt.",
+      Ingwaz:"Speichere einen +1-Zaubergrad-Effekt (z. B. extra Schaden/Ziele).",
       Laguz:"Nach Zauber-Fehlschlag +1d4 auf den nächsten Spell Attack.",
       Mannaz:"Advantage auf Arcana oder Religion.",
       Othala:"Ein Zauber ist an einen Ort oder ein Objekt gebunden."
     },
     Raidho:{
-      Berkano:"Erhalte +10 ft Bonusbewegung.",
-      Tiwaz:"+10 ft Bewegung, wenn du angreifst.",
+      Berkano:"Erhalte einen Bewegungs-Puffer von +10 ft.",
+      Tiwaz:"+10 ft Bewegung, wenn du in deinem Zug angreifst.",
       Algiz:"Ignoriere Difficult Terrain.",
-      Dagaz:"Du handelst nächstes Mal automatisch zuerst.",
+      Dagaz:"Du handelst in der nächsten Runde automatisch zuerst.",
       Ingwaz:"Speichere einen 10-ft-Teleport (Bonus Action).",
       Laguz:"Nach einer Opportunity Attack verliert der Gegner seine Reaktion.",
       Mannaz:"Advantage auf Initiative.",
-      Othala:"Du kannst einmal nicht bewegt/verschoben werden."
+      Othala:"Du kannst einmal nicht bewegt oder verschoben werden."
     },
     Kenaz:{
-      Berkano:"+1d4 auf Perception/Investigation.",
-      Tiwaz:"+1 auf Wahrnehmungswürfe.",
-      Algiz:"Advantage gegen Illusionen.",
-      Dagaz:"Du bekommst automatisch einen Hinweis.",
-      Ingwaz:"Speichere +1d8 für Erkenntniswurf.",
-      Laguz:"Nach Fehlschlag Perception rerollen.",
+      Berkano:"+1d4 Bonus auf den nächsten Wahrnehmungs- oder Erkenntniswurf.",
+      Tiwaz:"+1 auf Perception oder Investigation.",
+      Algiz:"Advantage auf Checks gegen Illusionen.",
+      Dagaz:"Du erhältst automatisch einen wichtigen Hinweis der SL.",
+      Ingwaz:"Speichere +1d8 für einen Erkenntniswurf.",
+      Laguz:"Nach Fehlschlag darfst du einen Wahrnehmungswurf wiederholen.",
       Mannaz:"Advantage auf Insight.",
-      Othala:"Ein Ort bleibt dir immer auffindbar."
+      Othala:"Ein Ort bleibt für dich immer erkennbar und leicht auffindbar."
     },
     Gebo:{
-      Berkano:"Sozialer Gunst-Token.",
+      Berkano:"Erhalte einen sozialen Gunst-Token (kleiner Gefallen, SL legt fest).",
       Tiwaz:"+1 auf CHA-basierte Checks.",
-      Algiz:"Einmal immun gegen Charm.",
-      Dagaz:"Eine Bitte wird automatisch akzeptiert.",
-      Ingwaz:"Speichere Advantage für sozialen Wurf.",
-      Laguz:"Nach Ablehnung erneut versuchen.",
+      Algiz:"Du bist einmalig immun gegen Charm-Effekte.",
+      Dagaz:"Eine Bitte wird automatisch akzeptiert (im Rahmen des Möglichen).",
+      Ingwaz:"Speichere Advantage für einen späteren sozialen Wurf.",
+      Laguz:"Nach Ablehnung darfst du einmal einen zweiten Versuch starten.",
       Mannaz:"Advantage auf Persuasion oder Deception.",
-      Othala:"Ein NPC hält sicher sein Wort."
+      Othala:"Ein NPC hält dir gegenüber sicher sein Wort."
     },
     Wunjo:{
-      Berkano:"Temp-TP gegen Psychic Damage.",
-      Tiwaz:"+1 auf Saves.",
-      Algiz:"Resistance gegen Fear/Charm.",
-      Dagaz:"Ein WIS/CHA Save gelingt automatisch.",
-      Ingwaz:"Speichere +1d10 auf Save.",
-      Laguz:"Nach misslungenem Save wiederholen.",
-      Mannaz:"Advantage auf WIS/CHA Saves.",
+      Berkano:"Erhalte temporäre TP, die nur bei psychischem Schaden verbraucht werden.",
+      Tiwaz:"+1 auf Rettungswürfe.",
+      Algiz:"Resistance gegen Fear oder Charm.",
+      Dagaz:"Ein WIS- oder CHA-Save gilt automatisch als bestanden.",
+      Ingwaz:"Speichere +1d10 Bonus auf einen Save.",
+      Laguz:"Nach einem misslungenen Save darfst du den Wurf wiederholen.",
+      Mannaz:"Advantage auf WIS- oder CHA-Saves.",
       Othala:"Du kannst einmal nicht frightened werden."
     }
   };
 
+  /* ===== EFFEKT-METADATEN ===== */
   const EFFECT_META = {
-    Fehu:{ Berkano:"charges", Tiwaz:"single_use", Algiz:"item_bound", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"item_bound" },
-    Uruz:{ Berkano:"ongoing_buff", Tiwaz:"charges", Algiz:"ongoing_buff", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"single_use" },
-    Thurisaz:{ Berkano:"single_use", Tiwaz:"ongoing_buff", Algiz:"single_use", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"item_bound" },
-    Ansuz:{ Berkano:"ongoing_buff", Tiwaz:"single_use", Algiz:"ongoing_buff", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"item_bound" },
-    Raidho:{ Berkano:"ongoing_buff", Tiwaz:"ongoing_buff", Algiz:"ongoing_buff", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"single_use" },
-    Kenaz:{ Berkano:"single_use", Tiwaz:"ongoing_buff", Algiz:"ongoing_buff", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"ongoing_buff" },
-    Gebo:{ Berkano:"social_token", Tiwaz:"ongoing_buff", Algiz:"single_use", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"social_token" },
-    Wunjo:{ Berkano:"ongoing_buff", Tiwaz:"ongoing_buff", Algiz:"ongoing_buff", Dagaz:"single_use", Ingwaz:"charges", Laguz:"single_use", Mannaz:"ongoing_buff", Othala:"single_use" }
+    Fehu:{
+      Berkano:"charges",
+      Tiwaz:"single_use",
+      Algiz:"item_bound",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Uruz:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"charges",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    },
+    Thurisaz:{
+      Berkano:"single_use",
+      Tiwaz:"ongoing_buff",
+      Algiz:"single_use",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Ansuz:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"single_use",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Raidho:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    },
+    Kenaz:{
+      Berkano:"single_use",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"ongoing_buff"
+    },
+    Gebo:{
+      Berkano:"social_token",
+      Tiwaz:"ongoing_buff",
+      Algiz:"single_use",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"social_token"
+    },
+    Wunjo:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    }
   };
 
+  /* ===== FLUSS-RUNEN ===== */
   const FLUSS = {
-    Sowilo:{ dur:"Bis zum nächsten Long Rest", price:"Kein zusätzlicher Preis." },
-    Jera:{ dur:"24 Stunden verzögert", price:"Kann nicht vorzeitig beendet werden." },
-    Isa:{ dur:"1 Encounter", price:"Bewegung halbiert ODER Bonusaktion blockiert." },
-    Hagalaz:{ dur:"1 Encounter", price:"Du erleidest 1d6 Schaden beim Wirken." },
-    Perthro:{ dur:"Trigger-basiert", price:"Bei keinem Trigger kleine Fehlwirkung." },
-    Nauthiz:{ dur:"Bis zum nächsten Long Rest", price:"Du erhältst 1 Stufe Erschöpfung." },
-    Eihwaz:{ dur:"Bis Schwelle erfüllt ist", price:"Danach Nachteil auf nächsten Wurf." },
-    Algiz:{ dur:"Bis zum nächsten Long Rest", price:"Leicht abgeschwächt, aber gegen Gegenmagie geschützt." }
+    Sowilo:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Kein zusätzlicher Preis."
+    },
+    Jera:{
+      dur:"24 Stunden (verzögert wirksam)",
+      price:"Der Effekt kann nicht vorzeitig beendet werden."
+    },
+    Isa:{
+      dur:"1 Encounter",
+      price:"Deine Bewegung ist halbiert oder deine Bonusaktion blockiert."
+    },
+    Hagalaz:{
+      dur:"1 Encounter",
+      price:"Du erleidest 1d6 Schaden beim Wirken des Rituals."
+    },
+    Perthro:{
+      dur:"Bis ein passender Trigger eintritt",
+      price:"Tritt kein Trigger ein, verursacht die Magie eine kleine Fehlwirkung."
+    },
+    Nauthiz:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Du erleidest 1 Stufe Erschöpfung."
+    },
+    Eihwaz:{
+      dur:"Bis eine klare Schwelle erreicht ist",
+      price:"Nach Auslösung hast du Nachteil auf deinen nächsten Wurf."
+    },
+    Algiz:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Der Effekt ist leicht abgeschwächt, aber vor Gegenmagie geschützt."
+    }
   };
 
   let pick = { anker:null, eid:null, fluss:null };
-  let restoring = HAS_SAVED_STATE;
 
-
-  /* -----------------------------------------------------------
-     WHEEL BAUEN
-  ----------------------------------------------------------- */
+  /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
   function buildWheel(id, keys, storeKey){
     const el = document.getElementById(id);
     if(!el) return;
-
-    const repeat = 12;
+    const repeat = 5;
+    const centerIndex = 2;
     const runes = [];
 
-    // Top spacer
-    el.innerHTML = `<div class="spacer"></div>`;
+    const top = document.createElement("div");
+    top.className = "spacer";
+    el.appendChild(top);
 
-    // Runen mehrfach bauen
-    for(let i = 0; i < repeat; i++){
+    for(let i=0;i<repeat;i++){
       keys.forEach(name=>{
         const d = document.createElement("div");
         d.className = "rune";
@@ -428,50 +508,48 @@ body.manifest .rune.active{
       });
     }
 
-    // Bottom spacer
-    el.innerHTML += `<div class="spacer"></div>`;
+    const bottom = document.createElement("div");
+    bottom.className = "spacer";
+    el.appendChild(bottom);
 
-    // Startposition wenn NEU
-    if(!HAS_SAVED_STATE){
-      requestAnimationFrame(()=>{
-        const h = runes[0].offsetHeight || 1;
-        const block = h * keys.length;
-        el.scrollTop = block * 6;
-      });
-    }
-
-// Position wiederherstellen wenn State existiert
-if(HAS_SAVED_STATE){
-  restoring = true;
-
-  // Mehrfach versuchen, weil Safari/iFrame gerne scrollTop blockiert
-  let tries = 0;
-  const maxTries = 12;
-
-  const tryRestore = () => {
-    const ok = scrollWheelToValue(id, pick[storeKey]);
-
-    if(ok || tries >= maxTries){
-      // fertig – wieder aktivieren
-      setTimeout(()=> restoring = false, 50);
-    } else {
-      tries++;
-      requestAnimationFrame(tryRestore);
-    }
-  };
-
-  requestAnimationFrame(tryRestore);
-}
-
-
-    // Live scroll detection
-    el.addEventListener("scroll",()=>{
-      if(restoring) return;
+    requestAnimationFrame(()=>{
+      if(!runes.length) return;
+      const runeHeight = runes[0].offsetHeight || 1;
+      const block = runeHeight * keys.length;
+      el.scrollTop = block * centerIndex;
 
       const rect = el.getBoundingClientRect();
       let best = null;
       let bestDist = Infinity;
+      runes.forEach(node=>{
+        const r = node.getBoundingClientRect();
+        const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+        if(d < bestDist){ bestDist = d; best = node; }
+      });
+      if(best){
+        runes.forEach(n=>n.classList.remove("active"));
+        best.classList.add("active");
+        pick[storeKey] = best.dataset.value;
+      }
+    });
 
+    el.addEventListener("scroll",()=>{
+      if(!runes.length) return;
+      const runeHeight = runes[0].offsetHeight || 1;
+      const block = runeHeight * keys.length;
+
+      const lowerThreshold = block * (centerIndex - 1.5);
+      const upperThreshold = block * (centerIndex + 1.5);
+
+      if(el.scrollTop < lowerThreshold){
+        el.scrollTop += block * 2;
+      } else if(el.scrollTop > upperThreshold){
+        el.scrollTop -= block * 2;
+      }
+
+      const rect = el.getBoundingClientRect();
+      let best = null;
+      let bestDist = Infinity;
       runes.forEach(node=>{
         const r = node.getBoundingClientRect();
         const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
@@ -489,210 +567,204 @@ if(HAS_SAVED_STATE){
     });
   }
 
-
-  /* -----------------------------------------------------------
-     SCROLL-AUTO-ZENTRIERUNG
-  ----------------------------------------------------------- */
-function scrollWheelToValue(wheelId, value){
-  const wheel = document.getElementById(wheelId);
-  if(!wheel || !value) return false;
-
-  const runes = [...wheel.querySelectorAll(".rune")];
-  const matches = runes.filter(r => r.dataset.value === value);
-  if(matches.length === 0) return false;
-
-  const target = matches[Math.floor(matches.length / 2)];
-  const wheelH = wheel.clientHeight;
-  const center = target.offsetTop + target.offsetHeight/2;
-
-  wheel.scrollTop = center - wheelH/2;
-
-  // Prüfen, ob der Scroll funktioniert hat
-  const success = Math.abs(wheel.scrollTop - (center - wheelH/2)) < 3;
-  return success;
-}
-  /* -----------------------------------------------------------
-     TRACKING-UI
-  ----------------------------------------------------------- */
+  /* ===== HILFSFUNKTION: TRACKING-UI ERZEUGEN ===== */
   function buildTrackingUI(anker, eid){
-    const meta = EFFECT_META[anker]?.[eid] || null;
-    if(!meta) return "";
+    const metaType = EFFECT_META[anker]?.[eid] || null;
+    if(!metaType) return "";
 
-    switch(meta){
+    let controls = "";
+
+    switch(metaType){
       case "single_use":
-        return `
-          <div id="effect-ui">
-          <b>🧿 TRACKING</b><br>
-          <label><input type="checkbox" id="effect-used"> Effekt wurde eingesetzt</label>
-          </div>
+        controls = `
+          <label>
+            <input type="checkbox" id="effect-used">
+            <span>Effekt wurde bereits eingesetzt</span>
+          </label>
+          <small>Dieser Effekt ist nur einmal pro Ritual nutzbar.</small>
         `;
-
+        break;
       case "charges":
-        return `
-          <div id="effect-ui">
-          <b>🧿 TRACKING</b><br>
-          <label>Ladungen: <input type="number" id="effect-charges" min="0" value="1"></label>
-          </div>
+        controls = `
+          <label>
+            <span>Ladungen verbleibend:</span>
+            <input type="number" id="effect-charges" min="0" step="1" value="1">
+          </label>
+          <small>Nutze dieses Feld, um verbrauchte Ladungen mitzuzählen.</small>
         `;
-
+        break;
       case "item_bound":
-        return `
-          <div id="effect-ui">
-          <b>🧿 TRACKING</b><br>
-          <label>Item: <input type="text" id="effect-item"></label>
-          </div>
+        controls = `
+          <label>
+            <span>Gebunden an Gegenstand:</span>
+            <input type="text" id="effect-item" placeholder="Name oder Beschreibung">
+          </label>
+          <small>Merke dir, welches Item von diesem Effekt geprägt ist.</small>
         `;
-
+        break;
       case "social_token":
-        return `
-          <div id="effect-ui">
-          <b>🧿 TRACKING</b><br>
-          <label>Person/Ort: <input type="text" id="effect-social"></label>
-          </div>
+        controls = `
+          <label>
+            <span>Wer schuldet dir etwas?</span>
+            <input type="text" id="effect-social" placeholder="Name / Gruppe / Ort">
+          </label>
+          <small>Notiere, wer dir den Gefallen schuldet.</small>
         `;
-
+        break;
       case "ongoing_buff":
-        return `
-          <div id="effect-ui">
-          <b>🧿 TRACKING</b><br>
-          <label><input type="checkbox" id="effect-active" checked> Buff aktiv</label>
-          </div>
+        controls = `
+          <label>
+            <input type="checkbox" id="effect-active" checked>
+            <span>Buff ist aktuell aktiv</span>
+          </label>
+          <small>Nutze das Häkchen, um dir zu merken, ob der Effekt noch wirkt.</small>
         `;
+        break;
+      default:
+        return "";
     }
-    return "";
+
+    return `
+      <div id="effect-ui">
+        <b>🧿 TRACKING</b><br>
+        ${controls}
+      </div>
+    `;
   }
 
-
-  /* -----------------------------------------------------------
-     SPEICHERN / LADEN
-  ----------------------------------------------------------- */
   function saveRitualState(){
     const state = {
       pick,
       manifest: document.body.classList.contains("manifest"),
-      tracking:{}
+      tracking: {}
     };
 
     const ui = document.getElementById("effect-ui");
     if(ui){
       ui.querySelectorAll("input").forEach(input=>{
-        state.tracking[input.id] =
-          input.type === "checkbox" ? input.checked : input.value;
+        if(input.type === "checkbox"){
+          state.tracking[input.id] = input.checked;
+        } else {
+          state.tracking[input.id] = input.value;
+        }
       });
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-
   function loadRitualState(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return;
 
-    const state = JSON.parse(raw);
-    if(!state.pick) return;
+    try{
+      const state = JSON.parse(raw);
+      if(!state.pick) return;
 
-    pick = state.pick;
-    document.body.classList.add("manifest");
+      pick = state.pick;
 
-    const omen  = OMEN[pick.anker];
-    const effectText = EFFECTS[pick.anker][pick.eid];
-    const flow  = FLUSS[pick.fluss];
+      document.body.classList.add("manifest");
 
-    const res = document.getElementById("result");
-    res.innerHTML = `
-      <b>🕯️ OMEN</b><br><i>${omen}</i>
-      <hr>
-      <b>⚔️ EFFEKT</b><br>${effectText}<br>
-      <b>Dauer:</b> ${flow.dur}
-      <hr>
-      <b>⚠️ PREIS</b><br>${flow.price}
-      <hr>
-      ${buildTrackingUI(pick.anker, pick.eid)}
-      <span class="small">Runenritual: 1× pro Long Rest.</span>
-    `;
-    res.classList.add("show");
+      const omen  = OMEN[pick.anker];
+      const effectText = EFFECTS[pick.anker][pick.eid];
+      const flow  = FLUSS[pick.fluss];
+      const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
 
-    if(state.tracking){
-      Object.entries(state.tracking).forEach(([id,val])=>{
-        const el = document.getElementById(id);
-        if(el){
+      const res = document.getElementById("result");
+      res.innerHTML = `
+        <b>🕯️ OMEN</b><br><i>${omen}</i>
+        <hr>
+        <b>⚔️ EFFEKT</b><br>
+        ${effectText}<br>
+        <b>Dauer:</b> ${flow.dur}
+        <hr>
+        <b>⚠️ PREIS</b><br>
+        ${flow.price}
+        <hr>
+        ${trackingHtml}
+        <span class="small">
+          Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+        </span>
+      `;
+      res.classList.add("show");
+
+      if(state.tracking){
+        Object.entries(state.tracking).forEach(([id,val])=>{
+          const el = document.getElementById(id);
+          if(!el) return;
           if(el.type === "checkbox") el.checked = val;
           else el.value = val;
-        }
-      });
+        });
+      }
+    }catch(e){
+      console.warn("Runenritual konnte Zustand nicht laden", e);
     }
   }
 
+  /* ===== INIT NACH DOM-LOAD ===== */
+  document.addEventListener("DOMContentLoaded", () => {
+    buildWheel("anker", Object.keys(OMEN), "anker");
+    buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+    buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
-/* -----------------------------------------------------------
-   INIT
------------------------------------------------------------ */
-document.addEventListener("DOMContentLoaded",()=>{
+    loadRitualState();
 
-  /* 1) WHEELS BAUEN */
-  buildWheel("anker", Object.keys(OMEN), "anker");
-  buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
-  buildWheel("fluss", Object.keys(FLUSS), "fluss");
+    document.getElementById("cast").onclick = () => {
+      document.body.classList.add("manifest");
 
-  /* 2) STATE LADEN */
-  loadRitualState(); // setzt pick = gespeicherte Werte UND zeigt result an
+      if(!pick.anker || !pick.eid || !pick.fluss) return;
 
-  /* 3) RESTORE-SCROLL AUSFÜHREN – erst jetzt sind DOM + pick ready */
-  setTimeout(()=>{
-    scrollWheelToValue("anker", pick.anker);
-    scrollWheelToValue("eid", pick.eid);
-    scrollWheelToValue("fluss", pick.fluss);
-  }, 60);
+      const omen  = OMEN[pick.anker];
+      const effectText = EFFECTS[pick.anker][pick.eid];
+      const flow  = FLUSS[pick.fluss];
 
-  /* 4) BUTTON-LOGIK */
-  document.getElementById("cast").onclick = () => {
-    if(!pick.anker || !pick.eid || !pick.fluss) return;
+      const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
 
-    document.body.classList.add("manifest");
+      const res = document.getElementById("result");
+      res.innerHTML = `
+        <b>🕯️ OMEN</b><br><i>${omen}</i>
+        <hr>
+        <b>⚔️ EFFEKT</b><br>
+        ${effectText}<br>
+        <b>Dauer:</b> ${flow.dur}
+        <hr>
+        <b>⚠️ PREIS</b><br>
+        ${flow.price}
+        <hr>
+        ${trackingHtml}
+        <span class="small">
+          Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+        </span>
+      `;
+      res.classList.add("show");
+      saveRitualState();
+    };
 
-    const omen  = OMEN[pick.anker];
-    const effectText = EFFECTS[pick.anker][pick.eid];
-    const flow = FLUSS[pick.fluss];
+    document.getElementById("reset").onclick = () => {
+      localStorage.removeItem(STORAGE_KEY);
+      document.body.classList.remove("manifest");
+      const res = document.getElementById("result");
+      res.classList.remove("show");
+      res.innerHTML = `
+        <span class="small">
+          Ein neuer Tag bricht an. Die Runen schweigen.
+        </span>
+      `;
+    };
 
-    const res = document.getElementById("result");
-    res.innerHTML = `
-      <b>🕯️ OMEN</b><br><i>${omen}</i>
-      <hr>
-      <b>⚔️ EFFEKT</b><br>${effectText}<br>
-      <b>Dauer:</b> ${flow.dur}
-      <hr>
-      <b>⚠️ PREIS</b><br>${flow.price}
-      <hr>
-      ${buildTrackingUI(pick.anker, pick.eid)}
-      <span class="small">Runenritual: 1× pro Long Rest.</span>
-    `;
-    res.classList.add("show");
-    saveRitualState();
-  };
-
-  document.getElementById("reset").onclick = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    document.body.classList.remove("manifest");
-    const res = document.getElementById("result");
-    res.classList.remove("show");
-    res.innerHTML = `<span class="small">Ein neuer Tag beginnt. Die Runen schweigen.</span>`;
-  };
-
-  document.addEventListener("input", e=>{
-    if(e.target.closest("#effect-ui")) saveRitualState();
+    document.addEventListener("change", e=>{
+      if(e.target.closest("#effect-ui")){
+        saveRitualState();
+      }
+    });
+    document.addEventListener("input", e=>{
+      if(e.target.closest("#effect-ui")){
+        saveRitualState();
+      }
+    });
   });
-  document.addEventListener("change", e=>{
-    if(e.target.closest("#effect-ui")) saveRitualState();
-  });
-
-});
-
-
-
 })();
 </script>
 
 </body>
 </html>
-
