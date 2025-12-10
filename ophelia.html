@@ -545,71 +545,60 @@ body.manifest .rune.active {
   };
 
   let pick = { anker:null, eid:null, fluss:null };
+  let restoring = false;
 
   /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
   function buildWheel(id, keys, storeKey){
-    const el = document.getElementById(id);
-    if(!el) return;
-    const repeat = 12;
-    const centerIndex = 6;
-    const runes = [];
+  const el = document.getElementById(id);
+  if(!el) return;
 
-    const top = document.createElement("div");
-    top.className = "spacer";
-    el.appendChild(top);
+  const repeat = 12;
+  const centerIndex = 6;
+  const runes = [];
 
-    for(let i=0;i<repeat;i++){
-      keys.forEach(name=>{
-        const d = document.createElement("div");
-        d.className = "rune";
-        d.dataset.value = name;
-        d.innerHTML = `
-          <div class="symbol">${RUNES[name]}</div>
-          <div class="name">${name}</div>
-        `;
-        el.appendChild(d);
-        runes.push(d);
-      });
-    }
+  /* Abstand oben */
+  const top = document.createElement("div");
+  top.className = "spacer";
+  el.appendChild(top);
 
-    const bottom = document.createElement("div");
-    bottom.className = "spacer";
-    el.appendChild(bottom);
-
-    if (!HAS_SAVED_STATE) {
-  requestAnimationFrame(()=>{
-    const runeHeight = runes[0].offsetHeight || 1;
-    const block = runeHeight * keys.length;
-    el.scrollTop = block * centerIndex;
-
-    const rect = el.getBoundingClientRect();
-    let best = null;
-    let bestDist = Infinity;
-
-    runes.forEach(node=>{
-      const r = node.getBoundingClientRect();
-      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
-      if(d < bestDist){ bestDist = d; best = node; }
+  /* Runen mehrfach duplizieren */
+  for(let i = 0; i < repeat; i++){
+    keys.forEach(name=>{
+      const d = document.createElement("div");
+      d.className = "rune";
+      d.dataset.value = name;
+      d.innerHTML = `
+        <div class="symbol">${RUNES[name]}</div>
+        <div class="name">${name}</div>
+      `;
+      el.appendChild(d);
+      runes.push(d);
     });
+  }
 
-    if(best){
-      runes.forEach(n=>n.classList.remove("active"));
-      best.classList.add("active");
-      pick[storeKey] = best.dataset.value;
-      }
-    });
+  /* Abstand unten */
+  const bottom = document.createElement("div");
+  bottom.className = "spacer";
+  el.appendChild(bottom);
 
-    el.addEventListener("scroll",()=>{
-      if(!runes.length) return;
+  /* Nur beim ersten Öffnen mittig positionieren */
+  if(!HAS_SAVED_STATE){
+    requestAnimationFrame(()=>{
       const runeHeight = runes[0].offsetHeight || 1;
       const block = runeHeight * keys.length;
+      el.scrollTop = block * centerIndex;
 
+      /* Direkt initial aktive Rune setzen */
       const rect = el.getBoundingClientRect();
       let best = null;
       let bestDist = Infinity;
+
       runes.forEach(node=>{
         const r = node.getBoundingClientRect();
-        const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+        const d = Math.abs(
+          (r.top + r.height/2) -
+          (rect.top + rect.height/2)
+        );
         if(d < bestDist){
           bestDist = d;
           best = node;
@@ -624,6 +613,32 @@ body.manifest .rune.active {
     });
   }
 
+  /* Scroll Listener (immer aktiv!) */
+el.addEventListener("scroll",()=>{
+  if(restoring) return;
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs(
+        (r.top + r.height/2) -
+        (rect.top + rect.height/2)
+      );
+      if(d < bestDist){
+        bestDist = d;
+        best = node;
+      }
+    });
+
+    if(best){
+      runes.forEach(n=>n.classList.remove("active"));
+      best.classList.add("active");
+      pick[storeKey] = best.dataset.value;
+    }
+  });
+}
   /* ===== HILFSFUNKTION: TRACKING-UI ERZEUGEN ===== */
   function buildTrackingUI(anker, eid){
     const metaType = EFFECT_META[anker]?.[eid] || null;
@@ -783,13 +798,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadRitualState();
 
-requestAnimationFrame(() => {
+if (HAS_SAVED_STATE) {
+  restoring = true;
   requestAnimationFrame(() => {
-    scrollWheelToValue("anker", pick.anker);
-    scrollWheelToValue("eid", pick.eid);
-    scrollWheelToValue("fluss", pick.fluss);
+    requestAnimationFrame(() => {
+      scrollWheelToValue("anker", pick.anker);
+      scrollWheelToValue("eid", pick.eid);
+      scrollWheelToValue("fluss", pick.fluss);
+      setTimeout(() => restoring = false, 50);
+    });
   });
-});
+}
 
   document.getElementById("cast").onclick = () => {
   document.body.classList.add("manifest");
