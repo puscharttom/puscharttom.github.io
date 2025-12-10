@@ -544,13 +544,17 @@ function buildWheel(id, keys, storeKey){
     const runeHeight = runes[0].offsetHeight || 1;
     const block = runeHeight * keys.length;
 
-    const lowerThreshold = block * (centerIndex - 1.5);
-    const upperThreshold = block * (centerIndex + 1.5);
-
+    const visibleBlocks = repeat;   // total repeated blocks (12)
+    const safeZone = 5;             // how many blocks before the edge it should trigger
+      
+    const lowerThreshold = block * (centerIndex - visibleBlocks + safeZone);
+    const upperThreshold = block * (centerIndex + visibleBlocks - safeZone);
+      
     if(el.scrollTop < lowerThreshold){
-      el.scrollTop += block * 2;
-    } else if(el.scrollTop > upperThreshold){
-      el.scrollTop -= block * 2;
+        el.scrollTop += block * (visibleBlocks * 2);
+    }
+    else if(el.scrollTop > upperThreshold){
+        el.scrollTop -= block * (visibleBlocks * 2);
     }
 
     const rect = el.getBoundingClientRect();
