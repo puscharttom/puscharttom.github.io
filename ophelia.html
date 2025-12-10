@@ -77,7 +77,15 @@ body{
   scroll-snap-type:y mandatory;
   position:relative;
 }
+/* ===== SCROLLBAR AUSBLENDEN (VISUELL) ===== */
+.wheel{
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge alt */
+}
 
+.wheel::-webkit-scrollbar{
+  display: none;                  /* Chrome / Safari / iOS */
+}
 .spacer{ height:80px; }
 
 .rune{
