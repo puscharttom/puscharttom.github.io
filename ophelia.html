@@ -77,6 +77,17 @@ body{
   scroll-snap-type:y mandatory;
   position:relative;
 }
+.wheel{
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  overflow-x: hidden;
+
+  scrollbar-width: none;
+}
+.wheel::-webkit-scrollbar{
+  display:none;
+}
+
 /* ===== SCROLLBAR AUSBLENDEN (VISUELL) ===== */
 .wheel{
   scrollbar-width: none;          /* Firefox */
