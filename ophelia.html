@@ -243,15 +243,37 @@ body.manifest .wheel{
 }
 #effect-ui input{ background:#07030f; color:#eee; border:1px solid #5a3d88; }
 
-/* === LOCKED ACTIVE RUNE GLOW === */
+/* ===== STARKE GLOW-EFFEKTE WENN GELockt ===== */
 body.manifest .rune.active {
-  opacity:1 !important;
-  transform:scale(1.25) !important;
+  opacity: 1;
+  transform: scale(1.25);
   text-shadow:
-    0 0 14px var(--accent-main),
-    0 0 30px var(--accent-shadow),
-    0 0 60px var(--accent-main);
-  filter:none !important;
+    0 0 12px var(--accent-main),
+    0 0 22px var(--accent-main),
+    0 0 36px var(--accent-shadow),
+    0 0 48px var(--accent-shadow);
+  animation: pulseGlow 2.6s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0% {
+    text-shadow:
+      0 0 14px var(--accent-main),
+      0 0 28px var(--accent-main),
+      0 0 38px var(--accent-shadow);
+  }
+  50% {
+    text-shadow:
+      0 0 24px var(--accent-main),
+      0 0 40px var(--accent-main),
+      0 0 60px var(--accent-shadow);
+  }
+  100% {
+    text-shadow:
+      0 0 14px var(--accent-main),
+      0 0 28px var(--accent-main),
+      0 0 38px var(--accent-shadow);
+  }
 }
  
 </style>
@@ -567,15 +589,6 @@ body.manifest .rune.active {
       if(!runes.length) return;
       const runeHeight = runes[0].offsetHeight || 1;
       const block = runeHeight * keys.length;
-
-      const lowerThreshold = block * (centerIndex - 1.5);
-      const upperThreshold = block * (centerIndex + 1.5);
-
-      if(el.scrollTop < lowerThreshold){
-        el.scrollTop += block * 2;
-      } else if(el.scrollTop > upperThreshold){
-        el.scrollTop -= block * 2;
-      }
 
       const rect = el.getBoundingClientRect();
       let best = null;
