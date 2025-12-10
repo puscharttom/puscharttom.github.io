@@ -780,11 +780,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadRitualState();
 
-  setTimeout(() => {
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
     scrollWheelToValue("anker", pick.anker);
     scrollWheelToValue("eid", pick.eid);
     scrollWheelToValue("fluss", pick.fluss);
-  }, 50);
+  });
+});
 
   document.getElementById("cast").onclick = () => {
   document.body.classList.add("manifest");
