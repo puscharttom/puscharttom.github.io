@@ -440,18 +440,29 @@ body.manifest .rune.active{
       });
     }
 
-    // Position wiederherstellen wenn gespeichert
-    if(HAS_SAVED_STATE){
-      restoring = true;
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-          setTimeout(()=>{
-            scrollWheelToValue(id, pick[storeKey]);
-            restoring = false;
-          }, 60);
-        });
-      });
+// Position wiederherstellen wenn State existiert
+if(HAS_SAVED_STATE){
+  restoring = true;
+
+  // Mehrfach versuchen, weil Safari/iFrame gerne scrollTop blockiert
+  let tries = 0;
+  const maxTries = 12;
+
+  const tryRestore = () => {
+    const ok = scrollWheelToValue(id, pick[storeKey]);
+
+    if(ok || tries >= maxTries){
+      // fertig – wieder aktivieren
+      setTimeout(()=> restoring = false, 50);
+    } else {
+      tries++;
+      requestAnimationFrame(tryRestore);
     }
+  };
+
+  requestAnimationFrame(tryRestore);
+}
+
 
     // Live scroll detection
     el.addEventListener("scroll",()=>{
@@ -482,24 +493,24 @@ body.manifest .rune.active{
   /* -----------------------------------------------------------
      SCROLL-AUTO-ZENTRIERUNG
   ----------------------------------------------------------- */
-  function scrollWheelToValue(wheelId, value){
-    const wheel = document.getElementById(wheelId);
-    if(!wheel || !value) return;
+function scrollWheelToValue(wheelId, value){
+  const wheel = document.getElementById(wheelId);
+  if(!wheel || !value) return false;
 
-    const matches = [...wheel.querySelectorAll(".rune")]
-      .filter(r => r.dataset.value === value);
+  const runes = [...wheel.querySelectorAll(".rune")];
+  const matches = runes.filter(r => r.dataset.value === value);
+  if(matches.length === 0) return false;
 
-    if(matches.length === 0) return;
+  const target = matches[Math.floor(matches.length / 2)];
+  const wheelH = wheel.clientHeight;
+  const center = target.offsetTop + target.offsetHeight/2;
 
-    const target = matches[Math.floor(matches.length/2)];
+  wheel.scrollTop = center - wheelH/2;
 
-    const wheelH = wheel.clientHeight;
-    const center = target.offsetTop + target.offsetHeight/2;
-
-    wheel.scrollTop = center - wheelH/2;
-  }
-
-
+  // Prüfen, ob der Scroll funktioniert hat
+  const success = Math.abs(wheel.scrollTop - (center - wheelH/2)) < 3;
+  return success;
+}
   /* -----------------------------------------------------------
      TRACKING-UI
   ----------------------------------------------------------- */
