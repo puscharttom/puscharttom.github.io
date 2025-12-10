@@ -316,6 +316,7 @@ body.manifest .rune.active {
 (() => {
   const CHARACTER_ID = "ophelia";
   const STORAGE_KEY = "runenritual_" + CHARACTER_ID + "_v1";
+  const HAS_SAVED_STATE = !!localStorage.getItem(STORAGE_KEY);
 
   /* ===== RUNENZEICHEN ===== */
   const RUNES = {
@@ -575,24 +576,26 @@ body.manifest .rune.active {
     bottom.className = "spacer";
     el.appendChild(bottom);
 
-    requestAnimationFrame(()=>{
-      if(!runes.length) return;
-      const runeHeight = runes[0].offsetHeight || 1;
-      const block = runeHeight * keys.length;
-      el.scrollTop = block * centerIndex;
+    if (!HAS_SAVED_STATE) {
+  requestAnimationFrame(()=>{
+    const runeHeight = runes[0].offsetHeight || 1;
+    const block = runeHeight * keys.length;
+    el.scrollTop = block * centerIndex;
 
-      const rect = el.getBoundingClientRect();
-      let best = null;
-      let bestDist = Infinity;
-      runes.forEach(node=>{
-        const r = node.getBoundingClientRect();
-        const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
-        if(d < bestDist){ bestDist = d; best = node; }
-      });
-      if(best){
-        runes.forEach(n=>n.classList.remove("active"));
-        best.classList.add("active");
-        pick[storeKey] = best.dataset.value;
+    const rect = el.getBoundingClientRect();
+    let best = null;
+    let bestDist = Infinity;
+
+    runes.forEach(node=>{
+      const r = node.getBoundingClientRect();
+      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+      if(d < bestDist){ bestDist = d; best = node; }
+    });
+
+    if(best){
+      runes.forEach(n=>n.classList.remove("active"));
+      best.classList.add("active");
+      pick[storeKey] = best.dataset.value;
       }
     });
 
