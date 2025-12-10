@@ -625,59 +625,63 @@ function scrollWheelToValue(wheelId, value){
   }
 
 
-  /* -----------------------------------------------------------
-     INIT
-  ----------------------------------------------------------- */
-  document.addEventListener("DOMContentLoaded",()=>{
+/* -----------------------------------------------------------
+   INIT
+----------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded",()=>{
 
-    buildWheel("anker", Object.keys(OMEN), "anker");
-    buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
-    buildWheel("fluss", Object.keys(FLUSS), "fluss");
+  // WICHTIG: zuerst State laden → pick wird gesetzt
+  loadRitualState();
 
-    loadRitualState();
+  // danach Wheels bauen, damit Restore weiß wohin
+  buildWheel("anker", Object.keys(OMEN), "anker");
+  buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+  buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
-    document.getElementById("cast").onclick = () => {
-      if(!pick.anker || !pick.eid || !pick.fluss) return;
+  document.getElementById("cast").onclick = () => {
+    if(!pick.anker || !pick.eid || !pick.fluss) return;
 
-      document.body.classList.add("manifest");
+    document.body.classList.add("manifest");
 
-      const omen  = OMEN[pick.anker];
-      const effectText = EFFECTS[pick.anker][pick.eid];
-      const flow = FLUSS[pick.fluss];
+    const omen  = OMEN[pick.anker];
+    const effectText = EFFECTS[pick.anker][pick.eid];
+    const flow = FLUSS[pick.fluss];
 
-      const res = document.getElementById("result");
-      res.innerHTML = `
-        <b>🕯️ OMEN</b><br><i>${omen}</i>
-        <hr>
-        <b>⚔️ EFFEKT</b><br>${effectText}<br>
-        <b>Dauer:</b> ${flow.dur}
-        <hr>
-        <b>⚠️ PREIS</b><br>${flow.price}
-        <hr>
-        ${buildTrackingUI(pick.anker, pick.eid)}
-        <span class="small">Runenritual: 1× pro Long Rest.</span>
-      `;
-      res.classList.add("show");
+    const res = document.getElementById("result");
+    res.innerHTML = `
+      <b>🕯️ OMEN</b><br><i>${omen}</i>
+      <hr>
+      <b>⚔️ EFFEKT</b><br>${effectText}<br>
+      <b>Dauer:</b> ${flow.dur}
+      <hr>
+      <b>⚠️ PREIS</b><br>${flow.price}
+      <hr>
+      ${buildTrackingUI(pick.anker, pick.eid)}
+      <span class="small">Runenritual: 1× pro Long Rest.</span>
+    `;
+    res.classList.add("show");
 
-      saveRitualState();
-    };
+    saveRitualState();
+  };
 
-    document.getElementById("reset").onclick = () => {
-      localStorage.removeItem(STORAGE_KEY);
-      document.body.classList.remove("manifest");
+  document.getElementById("reset").onclick = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    document.body.classList.remove("manifest");
 
-      const res = document.getElementById("result");
-      res.classList.remove("show");
-      res.innerHTML = `<span class="small">Ein neuer Tag bricht an. Die Runen schweigen.</span>`;
-    };
+    const res = document.getElementById("result");
+    res.classList.remove("show");
+    res.innerHTML = `<span class="small">Ein neuer Tag bricht an. Die Runen schweigen.</span>`;
+  };
 
-    document.addEventListener("change", e=>{
-      if(e.target.closest("#effect-ui")) saveRitualState();
-    });
-    document.addEventListener("input", e=>{
-      if(e.target.closest("#effect-ui")) saveRitualState();
-    });
+  document.addEventListener("change", e=>{
+    if(e.target.closest("#effect-ui")) saveRitualState();
   });
+  document.addEventListener("input", e=>{
+    if(e.target.closest("#effect-ui")) saveRitualState();
+  });
+
+});
+
 
 })();
 </script>
