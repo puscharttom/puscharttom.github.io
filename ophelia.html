@@ -728,16 +728,33 @@ function scrollWheelToValue(wheelId, value){
   const wheel = document.getElementById(wheelId);
   if(!wheel || !value) return;
 
-  const runes = [...wheel.querySelectorAll(".rune")];
-  const target = runes.find(r => r.dataset.value === value);
-  if(!target) return;
+  const runes = [...wheel.querySelectorAll(".rune")]
+    .filter(r => r.dataset.value === value);
+  if(!runes.length) return;
 
   const wheelRect = wheel.getBoundingClientRect();
-  const runeRect = target.getBoundingClientRect();
+  const wheelCenter = wheelRect.top + wheelRect.height / 2;
 
+  let best = null;
+  let bestDist = Infinity;
+
+  runes.forEach(rune => {
+    const r = rune.getBoundingClientRect();
+    const center = r.top + r.height / 2;
+    const dist = Math.abs(center - wheelCenter);
+
+    if(dist < bestDist){
+      bestDist = dist;
+      best = rune;
+    }
+  });
+
+  if(!best) return;
+
+  const r = best.getBoundingClientRect();
   const offset =
-    (runeRect.top + runeRect.height / 2) -
-    (wheelRect.top + wheelRect.height / 2);
+    (r.top + r.height / 2) -
+    wheelCenter;
 
   wheel.scrollTop += offset;
 }
