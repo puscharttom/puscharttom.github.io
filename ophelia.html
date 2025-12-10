@@ -220,11 +220,22 @@ hr{
 }
 .small{ opacity:.7; font-size:.75rem; }
 
-/* ===== LOCK ===== */
+/* ===== LOCK-ZUSTAND OHNE FARBVERLUST ===== */
 body.manifest .wheel{
-  filter:grayscale(.6) brightness(.75);
   pointer-events:none;
   overflow:hidden;
+}
+
+/* alle Runen dämpfen */
+body.manifest .rune{
+  opacity:.25;
+  filter:grayscale(1) brightness(.5);
+}
+
+/* aktive Rune strahlt voll */
+body.manifest .rune.active{
+  opacity:1 !important;
+  filter:none !important;
 }
 
 /* ===== TRACKING ===== */
