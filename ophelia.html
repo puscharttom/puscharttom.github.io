@@ -550,9 +550,9 @@ body.manifest .wheel{
     
     // macht einen großen Sprung (wie vorher)
     if(el.scrollTop < lowerThreshold){
-      el.scrollTop += block * 10;
+      el.scrollTop += block * 5;
     } else if(el.scrollTop > upperThreshold){
-      el.scrollTop -= block * 10;
+      el.scrollTop -= block * 5;
     }
 
     const rect = el.getBoundingClientRect();
