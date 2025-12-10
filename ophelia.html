@@ -545,7 +545,7 @@ body.manifest .rune.active {
   };
 
   let pick = { anker:null, eid:null, fluss:null };
-  let restoring = false;
+  let restoring = HAS_SAVED_STATE;
 
   /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
   function buildWheel(id, keys, storeKey){
@@ -582,36 +582,20 @@ body.manifest .rune.active {
   el.appendChild(bottom);
 
   /* Nur beim ersten Öffnen mittig positionieren */
-  if(!HAS_SAVED_STATE){
-    requestAnimationFrame(()=>{
-      const runeHeight = runes[0].offsetHeight || 1;
-      const block = runeHeight * keys.length;
-      el.scrollTop = block * centerIndex;
+if (HAS_SAVED_STATE) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollWheelToValue("anker", pick.anker);
+      scrollWheelToValue("eid", pick.eid);
+      scrollWheelToValue("fluss", pick.fluss);
 
-      /* Direkt initial aktive Rune setzen */
-      const rect = el.getBoundingClientRect();
-      let best = null;
-      let bestDist = Infinity;
-
-      runes.forEach(node=>{
-        const r = node.getBoundingClientRect();
-        const d = Math.abs(
-          (r.top + r.height/2) -
-          (rect.top + rect.height/2)
-        );
-        if(d < bestDist){
-          bestDist = d;
-          best = node;
-        }
-      });
-
-      if(best){
-        runes.forEach(n=>n.classList.remove("active"));
-        best.classList.add("active");
-        pick[storeKey] = best.dataset.value;
-      }
+      // ✅ ERST NACHDEM ALLES FERTIG IST wieder aktivieren
+      setTimeout(() => {
+        restoring = false;
+      }, 120);
     });
-  }
+  });
+}
 
   /* Scroll Listener (immer aktiv!) */
 el.addEventListener("scroll",()=>{
