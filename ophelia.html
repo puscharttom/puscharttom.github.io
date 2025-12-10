@@ -728,35 +728,21 @@ function scrollWheelToValue(wheelId, value){
   const wheel = document.getElementById(wheelId);
   if(!wheel || !value) return;
 
-  const runes = [...wheel.querySelectorAll(".rune")]
+  // Alle Runen die diesen Wert haben (viele Kopien)
+  const matches = [...wheel.querySelectorAll(".rune")]
     .filter(r => r.dataset.value === value);
-  if(!runes.length) return;
 
-  const wheelRect = wheel.getBoundingClientRect();
-  const wheelCenter = wheelRect.top + wheelRect.height / 2;
+  if(matches.length === 0) return;
 
-  let best = null;
-  let bestDist = Infinity;
+  // Nimm die Rune in der M I T T E der Wiederholungen
+  const target = matches[Math.floor(matches.length / 2)];
 
-  runes.forEach(rune => {
-    const r = rune.getBoundingClientRect();
-    const center = r.top + r.height / 2;
-    const dist = Math.abs(center - wheelCenter);
+  // Position im scrollbaren Container
+  const wheelHeight = wheel.clientHeight;
+  const targetCenter = target.offsetTop + target.offsetHeight / 2;
 
-    if(dist < bestDist){
-      bestDist = dist;
-      best = rune;
-    }
-  });
-
-  if(!best) return;
-
-  const r = best.getBoundingClientRect();
-  const offset =
-    (r.top + r.height / 2) -
-    wheelCenter;
-
-  wheel.scrollTop += offset;
+  // Setze Scroll so, dass diese Rune exakt mittig sitzt
+  wheel.scrollTop = targetCenter - wheelHeight / 2;
 }
   function loadRitualState(){
     const raw = localStorage.getItem(STORAGE_KEY);
