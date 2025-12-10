@@ -630,14 +630,22 @@ function scrollWheelToValue(wheelId, value){
 ----------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded",()=>{
 
-  // WICHTIG: zuerst State laden → pick wird gesetzt
-  loadRitualState();
-
-  // danach Wheels bauen, damit Restore weiß wohin
+  /* 1) WHEELS BAUEN */
   buildWheel("anker", Object.keys(OMEN), "anker");
   buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
   buildWheel("fluss", Object.keys(FLUSS), "fluss");
 
+  /* 2) STATE LADEN */
+  loadRitualState(); // setzt pick = gespeicherte Werte UND zeigt result an
+
+  /* 3) RESTORE-SCROLL AUSFÜHREN – erst jetzt sind DOM + pick ready */
+  setTimeout(()=>{
+    scrollWheelToValue("anker", pick.anker);
+    scrollWheelToValue("eid", pick.eid);
+    scrollWheelToValue("fluss", pick.fluss);
+  }, 60);
+
+  /* 4) BUTTON-LOGIK */
   document.getElementById("cast").onclick = () => {
     if(!pick.anker || !pick.eid || !pick.fluss) return;
 
@@ -660,27 +668,26 @@ document.addEventListener("DOMContentLoaded",()=>{
       <span class="small">Runenritual: 1× pro Long Rest.</span>
     `;
     res.classList.add("show");
-
     saveRitualState();
   };
 
   document.getElementById("reset").onclick = () => {
     localStorage.removeItem(STORAGE_KEY);
     document.body.classList.remove("manifest");
-
     const res = document.getElementById("result");
     res.classList.remove("show");
-    res.innerHTML = `<span class="small">Ein neuer Tag bricht an. Die Runen schweigen.</span>`;
+    res.innerHTML = `<span class="small">Ein neuer Tag beginnt. Die Runen schweigen.</span>`;
   };
 
-  document.addEventListener("change", e=>{
+  document.addEventListener("input", e=>{
     if(e.target.closest("#effect-ui")) saveRitualState();
   });
-  document.addEventListener("input", e=>{
+  document.addEventListener("change", e=>{
     if(e.target.closest("#effect-ui")) saveRitualState();
   });
 
 });
+
 
 
 })();
