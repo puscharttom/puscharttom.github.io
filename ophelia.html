@@ -242,7 +242,18 @@ body.manifest .wheel{
   margin-top:.35rem;
 }
 #effect-ui input{ background:#07030f; color:#eee; border:1px solid #5a3d88; }
-  
+
+/* === LOCKED ACTIVE RUNE GLOW === */
+body.manifest .rune.active {
+  opacity:1 !important;
+  transform:scale(1.25) !important;
+  text-shadow:
+    0 0 14px var(--accent-main),
+    0 0 30px var(--accent-shadow),
+    0 0 60px var(--accent-main);
+  filter:none !important;
+}
+ 
 </style>
 </head>
 
