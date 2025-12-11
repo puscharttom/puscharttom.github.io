@@ -738,6 +738,7 @@ function loadRitualState(){
 
 /* ===== RITUAL WIRKEN ===== */
 document.getElementById("cast").onclick = () => {
+  playCastSound();
   document.body.classList.add("manifest");
 
   if(!pick.anker || !pick.eid || !pick.fluss) return;
