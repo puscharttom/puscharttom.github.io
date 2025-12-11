@@ -283,285 +283,295 @@ body.manifest .wheel{
   castSound.currentTime = 0;
   castSound.play().catch(()=>{});
 }
-const CHARACTER_ID = "meriel";
-const STORAGE_KEY = `runenritual_${CHARACTER_ID}_v1`;
-/* ===== RUNENZEICHEN ===== */
-const RUNES = {
-  Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
-  Raidho:"ᚱ", Kenaz:"ᚲ", Gebo:"ᚷ", Wunjo:"ᚹ",
-  Berkano:"ᛒ", Tiwaz:"ᛏ", Algiz:"ᛉ", Dagaz:"ᛞ",
-  Ingwaz:"ᛜ", Laguz:"ᛚ", Mannaz:"ᛗ", Othala:"ᛟ",
-  Sowilo:"ᛊ", Jera:"ᛃ", Isa:"ᛁ", Hagalaz:"ᚺ",
-  Perthro:"ᛈ", Nauthiz:"ᚾ", Eihwaz:"ᛇ"
-};
+  const CHARACTER_ID = "meriel";
+  const STORAGE_KEY = "runenritual_" + CHARACTER_ID + "_v1";
 
-/* ===== OMEN PRO ANKER ===== */
-const OMEN = {
-  Fehu:"Fehu tritt hervor – Besitz verlangt Führung.",
-  Uruz:"Uruz zeigt sich – dein Körper trägt heute mehr.",
-  Thurisaz:"Thurisaz blockiert den Weg – Macht kommt durch Widerstand.",
-  Ansuz:"Ansuz flüstert – Worte und Zauber hören zu.",
-  Raidho:"Raidho rollt – Bewegung formt das Schicksal.",
-  Kenaz:"Kenaz brennt – Wahrheit duldet keinen Schatten.",
-  Gebo:"Gebo fordert Austausch – nichts bleibt einseitig.",
-  Wunjo:"Wunjo lächelt vorsichtig – der Geist sucht Balance."
-};
+  /* ===== RUNENZEICHEN ===== */
+  const RUNES = {
+    Fehu:"ᚠ", Uruz:"ᚢ", Thurisaz:"ᚦ", Ansuz:"ᚨ",
+    Raidho:"ᚱ", Kenaz:"ᚲ", Gebo:"ᚷ", Wunjo:"ᚹ",
+    Berkano:"ᛒ", Tiwaz:"ᛏ", Algiz:"ᛉ", Dagaz:"ᛞ",
+    Ingwaz:"ᛜ", Laguz:"ᛚ", Mannaz:"ᛗ", Othala:"ᛟ",
+    Sowilo:"ᛊ", Jera:"ᛃ", Isa:"ᛁ", Hagalaz:"ᚺ",
+    Perthro:"ᛈ", Nauthiz:"ᚾ", Eihwaz:"ᛇ"
+  };
 
-/* ===== 64 EFFEKTE (ANKER × EID) ===== */
-const EFFECTS = {
-  Fehu:{
-    Berkano:"Erhalte 1d4 zusätzliche Ladungen für ein begrenztes Item.",
-    Tiwaz:"Gold- oder Ressourcenaufwand zählt einmalig als doppelt effektiv.",
-    Algiz:"Ein Besitz kann einmal nicht gestohlen oder zerstört werden.",
-    Dagaz:"Ein Handel oder Tausch gelingt automatisch.",
-    Ingwaz:"Speichere einen Ressourcenbonus (bis 50 gp Äquivalent).",
-    Laguz:"Nach Ressourcenverlust darfst du ihn einmal rückgängig machen.",
-    Mannaz:"Advantage bei Checks mit wertvollen Gegenständen.",
-    Othala:"Ein Item ist bis zum nächsten Long Rest fest an dich gebunden."
-  },
-  Uruz:{
-    Berkano:"Erhalte temporäre Trefferpunkte (1d6 + Proficiency Bonus).",
-    Tiwaz:"+1d4 Schaden bei STR-basierten Angriffen (1× pro Runde).",
-    Algiz:"Einmal pro Runde Resistance gegen physischen Schaden.",
-    Dagaz:"Ein STR- oder CON-Rettungswurf gilt automatisch als bestanden.",
-    Ingwaz:"Speichere +1d8 für einen körperlichen Wurf.",
-    Laguz:"Nach einem Miss darfst du +1d4 hinzufügen.",
-    Mannaz:"Advantage auf Athletics oder Acrobatics.",
-    Othala:"Du kannst einmal nicht prone werden."
-  },
-  Thurisaz:{
-    Berkano:"Dein erster Treffer verursacht +1d6 zusätzlichen Schaden.",
-    Tiwaz:"+1 auf Attack Rolls (1× pro Runde).",
-    Algiz:"Ignoriere einmal Shield oder ähnliche parierende Effekte.",
-    Dagaz:"Ein Angriff trifft automatisch (kein erzwungener Krit).",
-    Ingwaz:"Speichere +1d10 zusätzlichen Schaden.",
-    Laguz:"Nach einem verfehlten Angriff darfst du den Wurf wiederholen.",
-    Mannaz:"Advantage auf Angriffe gegen ein ausgewähltes Ziel.",
-    Othala:"Deine Waffe zählt als magisch gegen Resistenz/Immunität."
-  },
-  Ansuz:{
-    Berkano:"Nach Wirken eines Zaubers erhältst du Temp-TP = Zaubergrad × 2.",
-    Tiwaz:"+1 auf Spell Attack oder Spell Save DC (für 1 Zauber).",
-    Algiz:"Advantage auf Concentration Saves.",
-    Dagaz:"Ein Zauber ignoriert Disadvantage.",
-    Ingwaz:"Speichere einen +1-Zaubergrad-Effekt (z. B. extra Schaden/Ziele).",
-    Laguz:"Nach Zauber-Fehlschlag +1d4 auf den nächsten Spell Attack.",
-    Mannaz:"Advantage auf Arcana oder Religion.",
-    Othala:"Ein Zauber ist an einen Ort oder ein Objekt gebunden."
-  },
-  Raidho:{
-    Berkano:"Erhalte einen Bewegungs-Puffer von +10 ft.",
-    Tiwaz:"+10 ft Bewegung, wenn du in deinem Zug angreifst.",
-    Algiz:"Ignoriere Difficult Terrain.",
-    Dagaz:"Du handelst in der nächsten Runde automatisch zuerst.",
-    Ingwaz:"Speichere einen 10-ft-Teleport (Bonus Action).",
-    Laguz:"Nach einer Opportunity Attack verliert der Gegner seine Reaktion.",
-    Mannaz:"Advantage auf Initiative.",
-    Othala:"Du kannst einmal nicht bewegt oder verschoben werden."
-  },
-  Kenaz:{
-    Berkano:"+1d4 Bonus auf den nächsten Wahrnehmungs- oder Erkenntniswurf.",
-    Tiwaz:"+1 auf Perception oder Investigation.",
-    Algiz:"Advantage auf Checks gegen Illusionen.",
-    Dagaz:"Du erhältst automatisch einen wichtigen Hinweis der SL.",
-    Ingwaz:"Speichere +1d8 für einen Erkenntniswurf.",
-    Laguz:"Nach Fehlschlag darfst du einen Wahrnehmungswurf wiederholen.",
-    Mannaz:"Advantage auf Insight.",
-    Othala:"Ein Ort bleibt für dich immer erkennbar und leicht auffindbar."
-  },
-  Gebo:{
-    Berkano:"Erhalte einen sozialen Gunst-Token (kleiner Gefallen, SL legt fest).",
-    Tiwaz:"+1 auf CHA-basierte Checks.",
-    Algiz:"Du bist einmalig immun gegen Charm-Effekte.",
-    Dagaz:"Eine Bitte wird automatisch akzeptiert (im Rahmen des Möglichen).",
-    Ingwaz:"Speichere Advantage für einen späteren sozialen Wurf.",
-    Laguz:"Nach Ablehnung darfst du einmal einen zweiten Versuch starten.",
-    Mannaz:"Advantage auf Persuasion oder Deception.",
-    Othala:"Ein NPC hält dir gegenüber sicher sein Wort."
-  },
-  Wunjo:{
-    Berkano:"Erhalte temporäre TP, die nur bei psychischem Schaden verbraucht werden.",
-    Tiwaz:"+1 auf Rettungswürfe.",
-    Algiz:"Resistance gegen Fear oder Charm.",
-    Dagaz:"Ein WIS- oder CHA-Save gilt automatisch als bestanden.",
-    Ingwaz:"Speichere +1d10 Bonus auf einen Save.",
-    Laguz:"Nach einem misslungenen Save darfst du den Wurf wiederholen.",
-    Mannaz:"Advantage auf WIS- oder CHA-Saves.",
-    Othala:"Du kannst einmal nicht frightened werden."
-  }
-};
+  /* ===== OMEN PRO ANKER ===== */
+  const OMEN = {
+    Fehu:"Fehu tritt hervor – Besitz verlangt Führung.",
+    Uruz:"Uruz zeigt sich – dein Körper trägt heute mehr.",
+    Thurisaz:"Thurisaz blockiert den Weg – Macht kommt durch Widerstand.",
+    Ansuz:"Ansuz flüstert – Worte und Zauber hören zu.",
+    Raidho:"Raidho rollt – Bewegung formt das Schicksal.",
+    Kenaz:"Kenaz brennt – Wahrheit duldet keinen Schatten.",
+    Gebo:"Gebo fordert Austausch – nichts bleibt einseitig.",
+    Wunjo:"Wunjo lächelt vorsichtig – der Geist sucht Balance."
+  };
 
-/* ===== EFFEKT-METADATEN ===== */
-const EFFECT_META = {
-  Fehu:{
-    Berkano:"charges",
-    Tiwaz:"single_use",
-    Algiz:"item_bound",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"item_bound"
-  },
-  Uruz:{
-    Berkano:"ongoing_buff",
-    Tiwaz:"charges",
-    Algiz:"ongoing_buff",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"single_use"
-  },
-  Thurisaz:{
-    Berkano:"single_use",
-    Tiwaz:"ongoing_buff",
-    Algiz:"single_use",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"item_bound"
-  },
-  Ansuz:{
-    Berkano:"ongoing_buff",
-    Tiwaz:"single_use",
-    Algiz:"ongoing_buff",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"item_bound"
-  },
-  Raidho:{
-    Berkano:"ongoing_buff",
-    Tiwaz:"ongoing_buff",
-    Algiz:"ongoing_buff",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"single_use"
-  },
-  Kenaz:{
-    Berkano:"single_use",
-    Tiwaz:"ongoing_buff",
-    Algiz:"ongoing_buff",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"ongoing_buff"
-  },
-  Gebo:{
-    Berkano:"social_token",
-    Tiwaz:"ongoing_buff",
-    Algiz:"single_use",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"social_token"
-  },
-  Wunjo:{
-    Berkano:"ongoing_buff",
-    Tiwaz:"ongoing_buff",
-    Algiz:"ongoing_buff",
-    Dagaz:"single_use",
-    Ingwaz:"charges",
-    Laguz:"single_use",
-    Mannaz:"ongoing_buff",
-    Othala:"single_use"
-  }
-};
-
-/* ===== FLUSS-RUNEN ===== */
-const FLUSS = {
-  Sowilo:{
-    dur:"Bis zum nächsten Long Rest",
-    price:"Kein zusätzlicher Preis."
-  },
-  Jera:{
-    dur:"24 Stunden (verzögert wirksam)",
-    price:"Der Effekt kann nicht vorzeitig beendet werden."
-  },
-  Isa:{
-    dur:"1 Encounter",
-    price:"Deine Bewegung ist halbiert oder deine Bonusaktion blockiert."
-  },
-  Hagalaz:{
-    dur:"1 Encounter",
-    price:"Du erleidest 1d6 Schaden beim Wirken des Rituals."
-  },
-  Perthro:{
-    dur:"Bis ein passender Trigger eintritt",
-    price:"Tritt kein Trigger ein, verursacht die Magie eine kleine Fehlwirkung."
-  },
-  Nauthiz:{
-    dur:"Bis zum nächsten Long Rest",
-    price:"Du erleidest 1 Stufe Erschöpfung."
-  },
-  Eihwaz:{
-    dur:"Bis eine klare Schwelle erreicht ist",
-    price:"Nach Auslösung hast du Nachteil auf deinen nächsten Wurf."
-  },
-  Algiz:{
-    dur:"Bis zum nächsten Long Rest",
-    price:"Der Effekt ist leicht abgeschwächt, aber vor Gegenmagie geschützt."
-  }
-};
-
-let pick = { anker:null, eid:null, fluss:null };
-
-/* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
-function buildWheel(id, keys, storeKey){
-  const el = document.getElementById(id);
-  const repeat = 12;
-  const centerIndex = 6;
-  const runes = [];
-
-  const top = document.createElement("div");
-  top.className = "spacer";
-  el.appendChild(top);
-
-  for(let i=0;i<repeat;i++){
-    keys.forEach(name=>{
-      const d = document.createElement("div");
-      d.className = "rune";
-      d.dataset.value = name;
-      d.innerHTML = `
-        <div class="symbol">${RUNES[name]}</div>
-        <div class="name">${name}</div>
-      `;
-      el.appendChild(d);
-      runes.push(d);
-    });
-  }
-
-  const bottom = document.createElement("div");
-  bottom.className = "spacer";
-  el.appendChild(bottom);
-
-  requestAnimationFrame(()=>{
-    if(!runes.length) return;
-    const runeHeight = runes[0].offsetHeight || 1;
-    const block = runeHeight * keys.length;
-    el.scrollTop = block * centerIndex;
-
-    const rect = el.getBoundingClientRect();
-    let best = null;
-    let bestDist = Infinity;
-    runes.forEach(node=>{
-      const r = node.getBoundingClientRect();
-      const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
-      if(d < bestDist){ bestDist = d; best = node; }
-    });
-    if(best){
-      runes.forEach(n=>n.classList.remove("active"));
-      best.classList.add("active");
-      pick[storeKey] = best.dataset.value;
+  /* ===== 64 EFFEKTE (ANKER × EID) ===== */
+  const EFFECTS = {
+    Fehu:{
+      Berkano:"Erhalte 1d4 zusätzliche Ladungen für ein begrenztes Item.",
+      Tiwaz:"Gold- oder Ressourcenaufwand zählt einmalig als doppelt effektiv.",
+      Algiz:"Ein Besitz kann einmal nicht gestohlen oder zerstört werden.",
+      Dagaz:"Ein Handel oder Tausch gelingt automatisch.",
+      Ingwaz:"Speichere einen Ressourcenbonus (bis 50 gp Äquivalent).",
+      Laguz:"Nach Ressourcenverlust darfst du ihn einmal rückgängig machen.",
+      Mannaz:"Advantage bei Checks mit wertvollen Gegenständen.",
+      Othala:"Ein Item ist bis zum nächsten Long Rest fest an dich gebunden."
+    },
+    Uruz:{
+      Berkano:"Erhalte temporäre Trefferpunkte (1d6 + Proficiency Bonus).",
+      Tiwaz:"+1d4 Schaden bei STR-basierten Angriffen (1× pro Runde).",
+      Algiz:"Einmal pro Runde Resistance gegen physischen Schaden.",
+      Dagaz:"Ein STR- oder CON-Rettungswurf gilt automatisch als bestanden.",
+      Ingwaz:"Speichere +1d8 für einen körperlichen Wurf.",
+      Laguz:"Nach einem Miss darfst du +1d4 hinzufügen.",
+      Mannaz:"Advantage auf Athletics oder Acrobatics.",
+      Othala:"Du kannst einmal nicht prone werden."
+    },
+    Thurisaz:{
+      Berkano:"Dein erster Treffer verursacht +1d6 zusätzlichen Schaden.",
+      Tiwaz:"+1 auf Attack Rolls (1× pro Runde).",
+      Algiz:"Ignoriere einmal Shield oder ähnliche parierende Effekte.",
+      Dagaz:"Ein Angriff trifft automatisch (kein erzwungener Krit).",
+      Ingwaz:"Speichere +1d10 zusätzlichen Schaden.",
+      Laguz:"Nach einem verfehlten Angriff darfst du den Wurf wiederholen.",
+      Mannaz:"Advantage auf Angriffe gegen ein ausgewähltes Ziel.",
+      Othala:"Deine Waffe zählt als magisch gegen Resistenz/Immunität."
+    },
+    Ansuz:{
+      Berkano:"Nach Wirken eines Zaubers erhältst du Temp-TP = Zaubergrad × 2.",
+      Tiwaz:"+1 auf Spell Attack oder Spell Save DC (für 1 Zauber).",
+      Algiz:"Advantage auf Concentration Saves.",
+      Dagaz:"Ein Zauber ignoriert Disadvantage.",
+      Ingwaz:"Speichere einen +1-Zaubergrad-Effekt (z. B. extra Schaden/Ziele).",
+      Laguz:"Nach Zauber-Fehlschlag +1d4 auf den nächsten Spell Attack.",
+      Mannaz:"Advantage auf Arcana oder Religion.",
+      Othala:"Ein Zauber ist an einen Ort oder ein Objekt gebunden."
+    },
+    Raidho:{
+      Berkano:"Erhalte einen Bewegungs-Puffer von +10 ft.",
+      Tiwaz:"+10 ft Bewegung, wenn du in deinem Zug angreifst.",
+      Algiz:"Ignoriere Difficult Terrain.",
+      Dagaz:"Du handelst in der nächsten Runde automatisch zuerst.",
+      Ingwaz:"Speichere einen 10-ft-Teleport (Bonus Action).",
+      Laguz:"Nach einer Opportunity Attack verliert der Gegner seine Reaktion.",
+      Mannaz:"Advantage auf Initiative.",
+      Othala:"Du kannst einmal nicht bewegt oder verschoben werden."
+    },
+    Kenaz:{
+      Berkano:"+1d4 Bonus auf den nächsten Wahrnehmungs- oder Erkenntniswurf.",
+      Tiwaz:"+1 auf Perception oder Investigation.",
+      Algiz:"Advantage auf Checks gegen Illusionen.",
+      Dagaz:"Du erhältst automatisch einen wichtigen Hinweis der SL.",
+      Ingwaz:"Speichere +1d8 für einen Erkenntniswurf.",
+      Laguz:"Nach Fehlschlag darfst du einen Wahrnehmungswurf wiederholen.",
+      Mannaz:"Advantage auf Insight.",
+      Othala:"Ein Ort bleibt für dich immer erkennbar und leicht auffindbar."
+    },
+    Gebo:{
+      Berkano:"Erhalte einen sozialen Gunst-Token (kleiner Gefallen, SL legt fest).",
+      Tiwaz:"+1 auf CHA-basierte Checks.",
+      Algiz:"Du bist einmalig immun gegen Charm-Effekte.",
+      Dagaz:"Eine Bitte wird automatisch akzeptiert (im Rahmen des Möglichen).",
+      Ingwaz:"Speichere Advantage für einen späteren sozialen Wurf.",
+      Laguz:"Nach Ablehnung darfst du einmal einen zweiten Versuch starten.",
+      Mannaz:"Advantage auf Persuasion oder Deception.",
+      Othala:"Ein NPC hält dir gegenüber sicher sein Wort."
+    },
+    Wunjo:{
+      Berkano:"Erhalte temporäre TP, die nur bei psychischem Schaden verbraucht werden.",
+      Tiwaz:"+1 auf Rettungswürfe.",
+      Algiz:"Resistance gegen Fear oder Charm.",
+      Dagaz:"Ein WIS- oder CHA-Save gilt automatisch als bestanden.",
+      Ingwaz:"Speichere +1d10 Bonus auf einen Save.",
+      Laguz:"Nach einem misslungenen Save darfst du den Wurf wiederholen.",
+      Mannaz:"Advantage auf WIS- oder CHA-Saves.",
+      Othala:"Du kannst einmal nicht frightened werden."
     }
-  });
+  };
+
+  /* ===== EFFEKT-METADATEN ===== */
+  const EFFECT_META = {
+    Fehu:{
+      Berkano:"charges",
+      Tiwaz:"single_use",
+      Algiz:"item_bound",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Uruz:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"charges",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    },
+    Thurisaz:{
+      Berkano:"single_use",
+      Tiwaz:"ongoing_buff",
+      Algiz:"single_use",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Ansuz:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"single_use",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"item_bound"
+    },
+    Raidho:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    },
+    Kenaz:{
+      Berkano:"single_use",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"ongoing_buff"
+    },
+    Gebo:{
+      Berkano:"social_token",
+      Tiwaz:"ongoing_buff",
+      Algiz:"single_use",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"social_token"
+    },
+    Wunjo:{
+      Berkano:"ongoing_buff",
+      Tiwaz:"ongoing_buff",
+      Algiz:"ongoing_buff",
+      Dagaz:"single_use",
+      Ingwaz:"charges",
+      Laguz:"single_use",
+      Mannaz:"ongoing_buff",
+      Othala:"single_use"
+    }
+  };
+
+  /* ===== FLUSS-RUNEN ===== */
+  const FLUSS = {
+    Sowilo:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Kein zusätzlicher Preis."
+    },
+    Jera:{
+      dur:"24 Stunden (verzögert wirksam)",
+      price:"Der Effekt kann nicht vorzeitig beendet werden."
+    },
+    Isa:{
+      dur:"1 Encounter",
+      price:"Deine Bewegung ist halbiert oder deine Bonusaktion blockiert."
+    },
+    Hagalaz:{
+      dur:"1 Encounter",
+      price:"Du erleidest 1d6 Schaden beim Wirken des Rituals."
+    },
+    Perthro:{
+      dur:"Bis ein passender Trigger eintritt",
+      price:"Tritt kein Trigger ein, verursacht die Magie eine kleine Fehlwirkung."
+    },
+    Nauthiz:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Du erleidest 1 Stufe Erschöpfung."
+    },
+    Eihwaz:{
+      dur:"Bis eine klare Schwelle erreicht ist",
+      price:"Nach Auslösung hast du Nachteil auf deinen nächsten Wurf."
+    },
+    Algiz:{
+      dur:"Bis zum nächsten Long Rest",
+      price:"Der Effekt ist leicht abgeschwächt, aber vor Gegenmagie geschützt."
+    }
+  };
+
+  let pick = { anker:null, eid:null, fluss:null };
+
+  /* ===== DREHRAD MIT 5× WIEDERHOLUNG ===== */
+  function buildWheel(id, keys, storeKey){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const repeat = 12;
+    const centerIndex = 6;
+    const runes = [];
+
+    const top = document.createElement("div");
+    top.className = "spacer";
+    el.appendChild(top);
+
+    for(let i=0;i<repeat;i++){
+      keys.forEach(name=>{
+        const d = document.createElement("div");
+        d.className = "rune";
+        d.dataset.value = name;
+        d.innerHTML = `
+          <div class="symbol">${RUNES[name]}</div>
+          <div class="name">${name}</div>
+        `;
+        el.appendChild(d);
+        runes.push(d);
+      });
+    }
+
+    const bottom = document.createElement("div");
+    bottom.className = "spacer";
+    el.appendChild(bottom);
+
+    requestAnimationFrame(()=>{
+      if(!runes.length) return;
+      const runeHeight = runes[0].offsetHeight || 1;
+      const block = runeHeight * keys.length;
+      el.scrollTop = block * centerIndex;
+
+      const rect = el.getBoundingClientRect();
+      let best = null;
+      let bestDist = Infinity;
+      runes.forEach(node=>{
+        const r = node.getBoundingClientRect();
+        const d = Math.abs((r.top + r.height/2) - (rect.top + rect.height/2));
+        if(d < bestDist){ bestDist = d; best = node; }
+      });
+      if(best){
+        const oldActive = el.querySelector(".rune.active")?.dataset.value;
+      
+        runes.forEach(n=>n.classList.remove("active"));
+        best.classList.add("active");
+      
+        pick[storeKey] = best.dataset.value;
+      
+        // nur spielen wenn sich der Wert geändert hat
+        if (best.dataset.value !== oldActive) {
+          playClick();
+        }
+      }
+    });
 
   el.addEventListener("scroll",()=>{
     if(!runes.length) return;
@@ -591,211 +601,221 @@ function buildWheel(id, keys, storeKey){
       }
     });
 
-      if(best){
-        runes.forEach(n=>n.classList.remove("active"));
-        best.classList.add("active");
-        pick[storeKey] = best.dataset.value;
+    if (best) {
+      const oldActive = el.querySelector(".rune.active")?.dataset.value;
+    
+      runes.forEach(n => n.classList.remove("active"));
+      best.classList.add("active");
+    
+      pick[storeKey] = best.dataset.value;
+    
+      // Sound nur bei Wertwechsel
+      if (best.dataset.value !== oldActive) {
+        playClick();
       }
+    }
     });
   }
 
-/* ===== RÄDER AUFBAUEN ===== */
-buildWheel("anker", Object.keys(OMEN), "anker");
-buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
-buildWheel("fluss", Object.keys(FLUSS), "fluss");
+  /* ===== HILFSFUNKTION: TRACKING-UI ERZEUGEN ===== */
+  function buildTrackingUI(anker, eid){
+    const metaType = EFFECT_META[anker]?.[eid] || null;
+    if(!metaType) return "";
 
-/* ===== HILFSFUNKTION: TRACKING-UI ERZEUGEN ===== */
-function buildTrackingUI(anker, eid){
-  const metaType = EFFECT_META[anker]?.[eid] || null;
-  if(!metaType) return "";
+    let controls = "";
 
-  let controls = "";
+    switch(metaType){
+      case "single_use":
+        controls = `
+          <label>
+            <input type="checkbox" id="effect-used">
+            <span>Effekt wurde bereits eingesetzt</span>
+          </label>
+          <small>Dieser Effekt ist nur einmal pro Ritual nutzbar.</small>
+        `;
+        break;
+      case "charges":
+        controls = `
+          <label>
+            <span>Ladungen verbleibend:</span>
+            <input type="number" id="effect-charges" min="0" step="1" value="1">
+          </label>
+          <small>Nutze dieses Feld, um verbrauchte Ladungen mitzuzählen.</small>
+        `;
+        break;
+      case "item_bound":
+        controls = `
+          <label>
+            <span>Gebunden an Gegenstand:</span>
+            <input type="text" id="effect-item" placeholder="Name oder Beschreibung">
+          </label>
+          <small>Merke dir, welches Item von diesem Effekt geprägt ist.</small>
+        `;
+        break;
+      case "social_token":
+        controls = `
+          <label>
+            <span>Wer schuldet dir etwas?</span>
+            <input type="text" id="effect-social" placeholder="Name / Gruppe / Ort">
+          </label>
+          <small>Notiere, wer dir den Gefallen schuldet.</small>
+        `;
+        break;
+      case "ongoing_buff":
+        controls = `
+          <label>
+            <input type="checkbox" id="effect-active" checked>
+            <span>Buff ist aktuell aktiv</span>
+          </label>
+          <small>Nutze das Häkchen, um dir zu merken, ob der Effekt noch wirkt.</small>
+        `;
+        break;
+      default:
+        return "";
+    }
 
-  switch(metaType){
-    case "single_use":
-      controls = `
-        <label>
-          <input type="checkbox" id="effect-used">
-          <span>Effekt wurde bereits eingesetzt</span>
-        </label>
-        <small>Dieser Effekt ist nur einmal pro Ritual nutzbar.</small>
-      `;
-      break;
-    case "charges":
-      controls = `
-        <label>
-          <span>Ladungen verbleibend:</span>
-          <input type="number" id="effect-charges" min="0" step="1" value="1">
-        </label>
-        <small>Nutze dieses Feld, um verbrauchte Ladungen mitzuzählen.</small>
-      `;
-      break;
-    case "item_bound":
-      controls = `
-        <label>
-          <span>Gebunden an Gegenstand:</span>
-          <input type="text" id="effect-item" placeholder="Name oder Beschreibung">
-        </label>
-        <small>Merke dir, welches Item von diesem Effekt geprägt ist.</small>
-      `;
-      break;
-    case "social_token":
-      controls = `
-        <label>
-          <span>Wer schuldet dir etwas?</span>
-          <input type="text" id="effect-social" placeholder="Name / Gruppe / Ort">
-        </label>
-        <small>Notiere, wer dir den Gefallen schuldet.</small>
-      `;
-      break;
-    case "ongoing_buff":
-      controls = `
-        <label>
-          <input type="checkbox" id="effect-active" checked>
-          <span>Buff ist aktuell aktiv</span>
-        </label>
-        <small>Nutze das Häkchen, um dir zu merken, ob der Effekt noch wirkt.</small>
-      `;
-      break;
-    default:
-      return "";
-  }
-
-  return `
-    <div id="effect-ui">
-      <b>🧿 TRACKING</b><br>
-      ${controls}
-    </div>
-  `;
-}
-
-function saveRitualState(){
-  const state = {
-    pick,
-    manifest: document.body.classList.contains("manifest"),
-    tracking: {}
-  };
-
-  const ui = document.getElementById("effect-ui");
-  if(ui){
-    ui.querySelectorAll("input").forEach(input=>{
-      if(input.type === "checkbox"){
-        state.tracking[input.id] = input.checked;
-      } else {
-        state.tracking[input.id] = input.value;
-      }
-    });
-  }
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function loadRitualState(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(!raw) return;
-
-  try{
-    const state = JSON.parse(raw);
-    if(!state.pick) return;
-
-    pick = state.pick;
-
-    document.body.classList.add("manifest");
-
-    const omen  = OMEN[pick.anker];
-    const effectText = EFFECTS[pick.anker][pick.eid];
-    const flow  = FLUSS[pick.fluss];
-    const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
-
-    const res = document.getElementById("result");
-    res.innerHTML = `
-      <b>🕯️ OMEN</b><br><i>${omen}</i>
-      <hr>
-      <b>⚔️ EFFEKT</b><br>
-      ${effectText}<br>
-      <b>Dauer:</b> ${flow.dur}
-      <hr>
-      <b>⚠️ PREIS</b><br>
-      ${flow.price}
-      <hr>
-      ${trackingHtml}
-      <span class="small">
-        Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
-      </span>
+    return `
+      <div id="effect-ui">
+        <b>🧿 TRACKING</b><br>
+        ${controls}
+      </div>
     `;
-    res.classList.add("show");
+  }
 
-    if(state.tracking){
-      Object.entries(state.tracking).forEach(([id,val])=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        if(el.type === "checkbox") el.checked = val;
-        else el.value = val;
+  function saveRitualState(){
+    const state = {
+      pick,
+      manifest: document.body.classList.contains("manifest"),
+      tracking: {}
+    };
+
+    const ui = document.getElementById("effect-ui");
+    if(ui){
+      ui.querySelectorAll("input").forEach(input=>{
+        if(input.type === "checkbox"){
+          state.tracking[input.id] = input.checked;
+        } else {
+          state.tracking[input.id] = input.value;
+        }
       });
     }
-  }catch(e){
-    console.warn("Runenritual konnte Zustand nicht laden", e);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
-}
 
-/* ===== RITUAL WIRKEN ===== */
-document.getElementById("cast").onclick = () => {
-  playCastSound();
-  document.body.classList.add("manifest");
+  function loadRitualState(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
 
-  if(!pick.anker || !pick.eid || !pick.fluss) return;
+    try{
+      const state = JSON.parse(raw);
+      if(!state.pick) return;
 
-  const omen  = OMEN[pick.anker];
-  const effectText = EFFECTS[pick.anker][pick.eid];
-  const flow  = FLUSS[pick.fluss];
+      pick = state.pick;
 
-  const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
+      document.body.classList.add("manifest");
 
-  const res = document.getElementById("result");
-  res.innerHTML = `
-    <b>🕯️ OMEN</b><br><i>${omen}</i>
-    <hr>
-    <b>⚔️ EFFEKT</b><br>
-    ${effectText}<br>
-    <b>Dauer:</b> ${flow.dur}
-    <hr>
-    <b>⚠️ PREIS</b><br>
-    ${flow.price}
-    <hr>
-    ${trackingHtml}
-    <span class="small">
-      Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
-    </span>
-  `;
-  res.classList.add("show");
-  saveRitualState();
-};
+      const omen  = OMEN[pick.anker];
+      const effectText = EFFECTS[pick.anker][pick.eid];
+      const flow  = FLUSS[pick.fluss];
+      const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
 
-/* ===== LONG REST / RESET ===== */
-document.getElementById("reset").onclick = () => {
-  localStorage.removeItem(STORAGE_KEY);
-  document.body.classList.remove("manifest");
-  const res = document.getElementById("result");
-  res.classList.remove("show");
-  res.innerHTML = `
-    <span class="small">
-      Ein neuer Tag bricht an. Die Runen schweigen.
-    </span>
-  `;
-};
+      const res = document.getElementById("result");
+      res.innerHTML = `
+        <b>🕯️ OMEN</b><br><i>${omen}</i>
+        <hr>
+        <b>⚔️ EFFEKT</b><br>
+        ${effectText}<br>
+        <b>Dauer:</b> ${flow.dur}
+        <hr>
+        <b>⚠️ PREIS</b><br>
+        ${flow.price}
+        <hr>
+        ${trackingHtml}
+        <span class="small">
+          Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+        </span>
+      `;
+      res.classList.add("show");
 
-document.addEventListener("change", e=>{
-  if(e.target.closest("#effect-ui")){
-    saveRitualState();
+      if(state.tracking){
+        Object.entries(state.tracking).forEach(([id,val])=>{
+          const el = document.getElementById(id);
+          if(!el) return;
+          if(el.type === "checkbox") el.checked = val;
+          else el.value = val;
+        });
+      }
+    }catch(e){
+      console.warn("Runenritual konnte Zustand nicht laden", e);
+    }
   }
-});
-document.addEventListener("input", e=>{
-  if(e.target.closest("#effect-ui")){
-    saveRitualState();
-  }
-});
 
-loadRitualState();
+  /* ===== INIT NACH DOM-LOAD ===== */
+  document.addEventListener("DOMContentLoaded", () => {
+    buildWheel("anker", Object.keys(OMEN), "anker");
+    buildWheel("eid", Object.keys(EFFECTS.Fehu), "eid");
+    buildWheel("fluss", Object.keys(FLUSS), "fluss");
+
+    loadRitualState();
+
+    document.getElementById("cast").onclick = () => {
+      playCastSound();
+      document.body.classList.add("manifest");
+
+      if(!pick.anker || !pick.eid || !pick.fluss) return;
+
+      const omen  = OMEN[pick.anker];
+      const effectText = EFFECTS[pick.anker][pick.eid];
+      const flow  = FLUSS[pick.fluss];
+
+      const trackingHtml = buildTrackingUI(pick.anker, pick.eid);
+
+      const res = document.getElementById("result");
+      res.innerHTML = `
+        <b>🕯️ OMEN</b><br><i>${omen}</i>
+        <hr>
+        <b>⚔️ EFFEKT</b><br>
+        ${effectText}<br>
+        <b>Dauer:</b> ${flow.dur}
+        <hr>
+        <b>⚠️ PREIS</b><br>
+        ${flow.price}
+        <hr>
+        ${trackingHtml}
+        <span class="small">
+          Runenritual: 1× pro Long Rest · Effekte stapeln nicht mit sich selbst.
+        </span>
+      `;
+      res.classList.add("show");
+      saveRitualState();
+    };
+
+    document.getElementById("reset").onclick = () => {
+      localStorage.removeItem(STORAGE_KEY);
+      document.body.classList.remove("manifest");
+      const res = document.getElementById("result");
+      res.classList.remove("show");
+      res.innerHTML = `
+        <span class="small">
+          Ein neuer Tag bricht an. Die Runen schweigen.
+        </span>
+      `;
+    };
+
+    document.addEventListener("change", e=>{
+      if(e.target.closest("#effect-ui")){
+        saveRitualState();
+      }
+    });
+    document.addEventListener("input", e=>{
+      if(e.target.closest("#effect-ui")){
+        saveRitualState();
+      }
+    });
+  });
+})();
 </script>
+
 </body>
 </html>
