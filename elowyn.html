@@ -260,6 +260,20 @@ body.manifest .wheel{
 </div>
 
 <script>
+(() => {
+  const clickSound = document.getElementById("click-sound");
+  const castSound = document.getElementById("cast-sound");
+
+  function playClick() {
+  if (!clickSound) return;
+  clickSound.currentTime = 0;
+  clickSound.play().catch(()=>{});
+}
+  function playCastSound() {
+  if (!castSound) return;
+  castSound.currentTime = 0;
+  castSound.play().catch(()=>{});
+}
 const CHARACTER_ID = "elowyn";
 const STORAGE_KEY = "runenritual_elowyn_v1";
 
