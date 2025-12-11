@@ -266,6 +266,13 @@ body.manifest .wheel{
 
 <script>
 (() => {
+  const clickSound = document.getElementById("click-sound");
+
+  function playClick() {
+  if (!clickSound) return;
+  clickSound.currentTime = 0;
+  clickSound.play().catch(()=>{});
+}
   const CHARACTER_ID = "ophelia";
   const STORAGE_KEY = "runenritual_" + CHARACTER_ID + "_v1";
 
