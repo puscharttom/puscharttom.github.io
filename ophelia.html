@@ -591,11 +591,19 @@ body.manifest .wheel{
       }
     });
 
-      if(best){
-        runes.forEach(n=>n.classList.remove("active"));
-        best.classList.add("active");
-        pick[storeKey] = best.dataset.value;
+    if (best) {
+      const oldActive = el.querySelector(".rune.active")?.dataset.value;
+    
+      runes.forEach(n => n.classList.remove("active"));
+      best.classList.add("active");
+    
+      pick[storeKey] = best.dataset.value;
+    
+      // Sound nur bei Wertwechsel
+      if (best.dataset.value !== oldActive) {
+        playClick();
       }
+    }
     });
   }
 
