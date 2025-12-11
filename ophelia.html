@@ -242,6 +242,7 @@ body.manifest .wheel{
 </head>
 
 <body>
+  <audio id="click-sound" src="https://puscharttom.github.io/clicksound.mp3" preload="auto"></audio>
   <a class="back-button" href="index.html">← Zurück zur Startseite</a>
 <div class="title-image">OPHELIA RAVENSHADE</div>
 
@@ -541,9 +542,17 @@ body.manifest .wheel{
         if(d < bestDist){ bestDist = d; best = node; }
       });
       if(best){
+        const oldActive = el.querySelector(".rune.active")?.dataset.value;
+      
         runes.forEach(n=>n.classList.remove("active"));
         best.classList.add("active");
+      
         pick[storeKey] = best.dataset.value;
+      
+        // nur spielen wenn sich der Wert geändert hat
+        if (best.dataset.value !== oldActive) {
+          playClick();
+        }
       }
     });
 
