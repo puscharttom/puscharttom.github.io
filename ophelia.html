@@ -237,11 +237,131 @@ body.manifest .wheel{
   margin-top:.35rem;
 }
 #effect-ui input{ background:#07030f; color:#eee; border:1px solid #5a3d88; }
+
+/* === MAGIC ANIMATION LAYERS === */
+#spell-veil, #light-rays, #rune-layer, #particles, #character-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+}
+
+/* glowing veil */
+#spell-veil {
+  background: radial-gradient(circle at center,
+    var(--accent-main) 0%,
+    rgba(0,0,0,0.3) 40%,
+    rgba(0,0,0,0) 100%
+  );
+  mix-blend-mode: screen;
+}
+
+#spell-veil.active {
+  animation: veilPulse 2s ease-out forwards;
+}
+
+@keyframes veilPulse {
+  0%   { opacity:0; transform:scale(1); }
+  20%  { opacity:.9; transform:scale(1.2); }
+  50%  { opacity:.5; }
+  80%  { opacity:.9; transform:scale(1.05); }
+  100% { opacity:0; transform:scale(1); }
+}
+
+/* light rays */
+#light-rays {
+  background:
+    radial-gradient(circle at 50% 60%, rgba(255,255,255,.25), rgba(255,255,255,0) 70%),
+    conic-gradient(from 0deg,
+      rgba(255,255,255,.12),
+      rgba(255,255,255,0) 60%
+    );
+  mix-blend-mode: overlay;
+}
+
+#light-rays.active {
+  animation: raysPulse 1.4s ease-out forwards;
+}
+
+@keyframes raysPulse {
+  0% { opacity:0; transform:rotate(0deg); }
+  30% { opacity:.6; transform:rotate(20deg) scale(1.1); }
+  70% { opacity:.4; transform:rotate(40deg); }
+  100% { opacity:0; transform:rotate(60deg); }
+}
+
+/* rune symbols */
+#rune-layer.active { opacity:1; }
+
+.rune-symbol {
+  position:absolute;
+  opacity:0;
+  font-size:3rem;
+  color:white;
+  text-shadow:0 0 12px var(--accent-main), 0 0 28px var(--accent-main);
+  animation:runeFloat 1.6s ease-out forwards;
+}
+
+@keyframes runeFloat {
+  0%   { opacity:0; transform:translateY(0) scale(.6); }
+  20%  { opacity:1; }
+  60%  { transform:translateY(-40px) scale(1.1); opacity:.9; }
+  100% { opacity:0; transform:translateY(-120px) scale(.8); }
+}
+
+/* particles */
+.magic-particles span, #particles span {
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--accent-main);
+  box-shadow:0 0 10px var(--accent-main);
+  animation:floatUp 1.5s linear forwards;
+}
+
+@keyframes floatUp {
+  0% { opacity:1; transform:translateY(0) scale(1); }
+  70% { opacity:.8; }
+  100% { opacity:0; transform:translateY(-150px) scale(0); }
+}
+
+/* character flash */
+#character-flash img {
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(1.05);
+  max-height:70vh;
+  filter:drop-shadow(0 0 22px var(--accent-main));
+  opacity:0;
+}
+
+#character-flash.active img {
+  animation: flashChar 1.8s ease-out forwards;
+}
+
+@keyframes flashChar {
+  0% { opacity:0; transform:translate(-50%,-50%) scale(1.0); }
+  20% { opacity:1; transform:translate(-50%,-50%) scale(1.1); }
+  60% { opacity:.9; }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(1.0); }
+}
+
   
 </style>
 </head>
 
 <body>
+
+<!-- MAGIC ANIMATION LAYERS -->
+<div id="spell-veil"></div>
+<div id="light-rays"></div>
+<div id="rune-layer"></div>
+<div id="particles"></div>
+<div id="character-flash"></div>
+
   <audio id="click-sound" src="https://puscharttom.github.io/clicksound.wav" preload="auto"></audio>
   <audio id="cast-sound" src="https://puscharttom.github.io/lockin.wav" preload="auto"></audio>
   <a class="back-button" href="index.html">← Zurück zur Startseite</a>
@@ -758,6 +878,7 @@ body.manifest .wheel{
 
     document.getElementById("cast").onclick = () => {
       playCastSound();
+	castAnimation();
       document.body.classList.add("manifest");
 
       if(!pick.anker || !pick.eid || !pick.fluss) return;
@@ -811,6 +932,51 @@ body.manifest .wheel{
       }
     });
   });
+function castAnimation() {
+  const veil = document.getElementById("spell-veil");
+  const rays = document.getElementById("light-rays");
+  const runeLayer = document.getElementById("rune-layer");
+  const particles = document.getElementById("particles");
+  const charFlash = document.getElementById("character-flash");
+
+  /* reset */
+  [veil, rays, runeLayer, particles, charFlash].forEach(el => {
+    el.classList.remove("active");
+    void el.offsetWidth;
+  });
+
+  /* insert character PNG */
+  charFlash.innerHTML = `<img src="https://puscharttom.github.io/ophelia_png.png">`;
+
+  /* activate */
+  veil.classList.add("active");
+  rays.classList.add("active");
+  runeLayer.classList.add("active");
+  charFlash.classList.add("active");
+
+  /* runes */
+  runeLayer.innerHTML = "";
+  const R = ["ᚠ","ᚢ","ᚦ","ᚨ","ᚱ","ᚲ","ᚷ","ᚹ","ᛒ","ᛏ","ᛉ","ᛞ","ᛜ","ᛚ","ᛗ","ᛟ"];
+  for(let i = 0; i < 12; i++){
+    const r = document.createElement("div");
+    r.className = "rune-symbol";
+    r.textContent = R[Math.floor(Math.random()*R.length)];
+    r.style.left = (10 + Math.random()*80) + "%";
+    r.style.top = (20 + Math.random()*60) + "%";
+    r.style.animationDelay = (Math.random()*0.4) + "s";
+    runeLayer.appendChild(r);
+  }
+
+  /* particles */
+  particles.innerHTML = "";
+  for(let i = 0; i < 50; i++){
+    const p = document.createElement("span");
+    p.style.left = Math.random()*100 + "%";
+    p.style.top = Math.random()*100 + "%";
+    particles.appendChild(p);
+  }
+}
+
 })();
 </script>
 
