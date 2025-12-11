@@ -243,6 +243,7 @@ body.manifest .wheel{
 
 <body>
   <audio id="click-sound" src="https://puscharttom.github.io/clicksound.wav" preload="auto"></audio>
+  <audio id="cast-sound" src="https://puscharttom.github.io/lockin.wav" preload="auto"></audio>
   <a class="back-button" href="index.html">← Zurück zur Startseite</a>
 <div class="title-image">OPHELIA RAVENSHADE</div>
 
@@ -267,11 +268,17 @@ body.manifest .wheel{
 <script>
 (() => {
   const clickSound = document.getElementById("click-sound");
+  const castSound = document.getElementById("cast-sound");
 
   function playClick() {
   if (!clickSound) return;
   clickSound.currentTime = 0;
   clickSound.play().catch(()=>{});
+}
+  function playCastSound() {
+  if (!castSound) return;
+  castSound.currentTime = 0;
+  castSound.play().catch(()=>{});
 }
   const CHARACTER_ID = "ophelia";
   const STORAGE_KEY = "runenritual_" + CHARACTER_ID + "_v1";
@@ -750,6 +757,7 @@ body.manifest .wheel{
     loadRitualState();
 
     document.getElementById("cast").onclick = () => {
+      playCastSound();
       document.body.classList.add("manifest");
 
       if(!pick.anker || !pick.eid || !pick.fluss) return;
